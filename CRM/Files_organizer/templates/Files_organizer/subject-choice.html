@@ -1,0 +1,47 @@
+{% extends 'extends/layout.html' %}
+{% load static %}
+{% block style %}
+    {% include 'Files_organizer/includes/splide-css.html' %}
+    <link rel="stylesheet" href="{% static 'Files_organizer/css/files-start.css' %}">
+{% endblock style %}
+
+{% block main_content %}
+    {% include 'includes/icon-wing.html' %}
+    <h2 class="page-title">Programming courses</h2>
+    <hr>
+
+    <div class="files-content">
+        <div class="splide">
+            <div class="splide__track">
+                <ul class="splide__list">
+                    {% for subject in subjects %}
+                        <li class="splide__slide">
+                            <a href="{% url "topic" subject.programming_path.slug subject.slug %}"
+                               id="category-link">
+                                <div class="card categories mx-4 my-2 text-center">
+                                    <div class="card-body glass">
+                                        <h5 class="category-name">{{ subject.name }}</h5>
+                                    </div>
+                                </div>
+                            </a>
+                        </li>
+                    {% endfor subjects %}
+
+                </ul>
+
+            </div>
+
+
+        </div>
+
+    </div>
+
+{% endblock %}
+
+
+{% block script %}
+    <!-- carousel splide js -->
+    {% include 'Files_organizer/includes/splide-script.html' %}
+    <script src="{% static 'Files_organizer/js/files.js' %}"></script>
+{% endblock %}
+
