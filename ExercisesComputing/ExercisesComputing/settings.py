@@ -19,7 +19,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
+
 SECRET_KEY = os.getenv('SECRET_KEY')
+
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -58,11 +60,13 @@ MIDDLEWARE = [
 ROOT_URLCONF = 'ExercisesComputing.urls'
 ALLOWED_HOSTS = ['*']
 
-CORS_ORIGIN_WHITELIST = (
-    'http://crm:8000',
-    'http://api:8001',
-    'http://localhost:8000',
-)
+# CORS_ORIGIN_WHITELIST = (
+#     'http://crm:8000',
+#     'http://api:8001',
+#     'http://localhost:8000',
+#     'http://0.0.0.0:8000'
+# )
+CORS_ALLOW_ALL_ORIGINS = True
 
 TEMPLATES = [
     {
