@@ -181,8 +181,10 @@ function prev() {
 // }
 
 function showNote(id_obj) {
+    console.log(id_obj);
     getJson(API_URLS.note + id_obj)
         .then(data => {
+            console.log(data);
             if (data.length > 0) {
                 CALENDAR_SELECTORS.noteHour.innerHTML = `${data[0].hour}`
                 CALENDAR_SELECTORS.noteDate.innerHTML = `${data[0].date} `

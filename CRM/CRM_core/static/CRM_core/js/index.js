@@ -1,5 +1,5 @@
 
-const noteUrl = '/api/notes/?id='
+const noteUrl = '/api/get-note/?id='
 let meetingDates = function (startDate, endDate){
     return `/api/meetings-range/?start_date=${startDate}&end_date=${endDate}`
 }
@@ -12,6 +12,7 @@ document.addEventListener('DOMContentLoaded', function () {
 function showNoteText(id_obj, element) {
     getJson(noteUrl + id_obj)
         .then(data => {
+            console.log(data);
             if (data.length > 0) {
                 element.innerHTML =  data[0].text
             }

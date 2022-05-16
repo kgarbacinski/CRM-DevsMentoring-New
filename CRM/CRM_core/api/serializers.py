@@ -4,6 +4,11 @@ from CRM_core.models import Student, Mentor
 from Meetings_calendar.models import Meeting, Note
 
 
+class NoteSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Note
+        fields = '__all__'
+
 class MeetingSerializer(serializers.ModelSerializer):
     class Meta:
         model = Meeting
