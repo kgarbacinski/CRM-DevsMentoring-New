@@ -1,11 +1,23 @@
 import datetime
+
+from django.db.models import QuerySet
 from django.utils import timezone
 from rest_framework import generics, mixins, status
 from rest_framework.permissions import IsAuthenticated
 from CRM_core.api.serializers import MeetingSerializer, ChangeStudentAvatarSerializer, \
-    ChangeMentorAvatarSerializer
+    ChangeMentorAvatarSerializer, NoteSerializer
 from CRM_core.models import Student, Mentor
-from Meetings_calendar.models import Meeting
+from Meetings_calendar.models import Meeting, Note
+
+
+class GetNoteText(generics.ListAPIView):
+    serializer_class = NoteSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self) -> QuerySet[Note]:
+        meeting = self.request.GET.get('id')
+        user = self.request.user
+        return Note.objects.filter(author_id=user).filter(meeting_id=meeting)
 
 
 class ListMeetingsByDates(generics.ListAPIView):

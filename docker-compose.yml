@@ -1,8 +1,7 @@
-version: '3.3'
+version: '3.9'
 
 services:
   crm:
-    container_name: crm
     hostname: crm
     build: ./CRM
     command: python3 manage.py runserver crm:8000
@@ -18,7 +17,6 @@ services:
 
   api:
     build: ./ExercisesAPI
-    container_name: api
     hostname: api
     command: python3 manage.py runserver api:8001
     restart: always
@@ -33,7 +31,6 @@ services:
    
   computing:
     build: ./ExercisesComputing
-    container_name: computing
     hostname: computing
     command: sh -c "python3 manage.py makemigrations && python3 manage.py migrate && python3 manage.py runserver computing:8002"
     restart: always
@@ -59,7 +56,6 @@ services:
 
   redis:
     image: redis:6-alpine
-    # hostname: redis
     networks:
       - crmnetwork
 
@@ -72,12 +68,12 @@ services:
     environment:
       - CELERY_BROKER=redis://redis:6379/0
       - CELERY_BACKEND=redis://redis:6379/0
-      # - rabbit
+      - SECRET_KEY=${SECRET_KEY}
+  
     networks:
       - crmnetwork
   
   prometheus:
-    container_name: prometheus
     hostname: prometheus
     image: prom/prometheus
     volumes:

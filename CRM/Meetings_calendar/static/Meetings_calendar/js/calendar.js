@@ -90,6 +90,8 @@ buttonNext.onclick = () => next();
 
 function showCalendar(month, year) {
     let firstDay = new Date(year, month).getDay() - 1;
+    //TODO check this function
+    firstDay === -1 ? firstDay += 7: firstDay
     daysBody.textContent = "";
     centerTitle.textContent = months[month] + " " + year;
     let date = 1;
@@ -179,8 +181,10 @@ function prev() {
 // }
 
 function showNote(id_obj) {
+    console.log(id_obj);
     getJson(API_URLS.note + id_obj)
         .then(data => {
+            console.log(data);
             if (data.length > 0) {
                 CALENDAR_SELECTORS.noteHour.innerHTML = `${data[0].hour}`
                 CALENDAR_SELECTORS.noteDate.innerHTML = `${data[0].date} `
