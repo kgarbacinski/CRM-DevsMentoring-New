@@ -21,7 +21,7 @@ class Handler(ABC):
         self.extension = extension
 
     def create_file(self, test_input):
-        print('DUPA 2')
+        print('DUPA 3')
         unique_name = secrets.token_hex(nbytes=16)
         path = (f'{os.getcwd()}/files/{unique_name}{self.extension}')
         with open(path, "w+") as file:

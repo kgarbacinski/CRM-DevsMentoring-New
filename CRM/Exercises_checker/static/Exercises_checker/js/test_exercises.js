@@ -1,96 +1,124 @@
-let Selectors = {
-    "code_field": document.getElementById("code-form").elements['code'],
-    "info_header": document.getElementById('info')
+let Selectors = { "code_field" : document.getElementById("code-form").elements['code'],
+                    "info_header" : document.getElementById('info')
 
 }
 
-document.getElementById('send-button').addEventListener('click', function () {
-    sendToComputing();
-    saveCodeToDB()
+document.getElementById('send-button').addEventListener('click',  function(){
+     sendToComputing();
+     saveCodeToDB();
 })
 
-// //TODO remove duplicate
-// function getCookie(name) {
-//     let cookieValue = null;
-//     if (document.cookie && document.cookie !== '') {
-//         const cookies = document.cookie.split(';');
-//         for (let i = 0; i < cookies.length; i++) {
-//             const cookie = cookies[i].trim();
-//             if (cookie.substring(0, name.length + 1) === (name + '=')) {
-//                 cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-//                 break;
-//             }
-//         }
-//     }
-//     return cookieValue;
-// }
 
-async function saveCodeToDB() {
+
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+    
+async function saveCodeToDB(){
     let data = {}
     data.code = Selectors['code_field'].value
     let url = `${window.location.origin}/exercises/api/access/exercises/code/${exercise_status_id}`
     config = {
-        method: 'PATCH',
-        headers: {
+            method: 'PATCH',
+            headers: {
             'Accept': 'application/json',
-            'Content-Type': 'application/json',
-            'X-CSRFToken': getCookie("csrftoken")
-        },
-        body: JSON.stringify(data)
-    }
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCookie("csrftoken")
+            },
+            body: JSON.stringify(data)
+        }
     response = await fetch(url, config)
-    console.log(response)
-
-
+    // console.log(response)
 }
 
-async function getToken() {
+async function getToken(){
     let token_url = `${window.location.origin}/exercises/api/token/`
     let token_response = await (await fetch(token_url)).json();
     return token_response.access
 }
 
 async function sendToComputing() {
-    let data = {}
-    let computing_url = "http://0.0.0.0:8002/"
+let data = {}
+    // let computing_url =  "http://computing:8002/"
+    let computing_url = "http://localhost:8002/"
     let token = await getToken()
     data.code = Selectors['code_field'].value
     data.language = language
     data.name = slug_name
-    console.log(data)
-    console.log(data.code)
     config = {
         method: 'POST',
         headers: {
-            'Accept': 'application/json',
+        'Accept': 'application/json',
             'Content-Type': 'application/json',
             'Authorization': token,
             'X-CSRFToken': getCookie("csrftoken")
         },
         body: JSON.stringify(data)
     }
-
+    
     let computing_response = await fetch(computing_url, config)
     let body = await computing_response.json()
+    // console.log(body.task_id);
+    if (computing_response.ok){
+        console.log(body.task_id);
+        getStatus(body.task_id)
+        
+        // if(body.done === true){
+        //     window.alert("OK!")
 
-    if (computing_response.ok) {
+        // }
+        // else if (body.done=== false){
+        //     window.alert(`TEST PASSED:${body.test_passed}`)
 
-        if (body.done === true) {
-            window.alert("OK!")
+        // }
+            
+        }
 
-        } else if (body.done === false) {
-            window.alert(`TEST PASSED:${body.test_passed}`)
+    // else{
+    //         Selectors["info_header"].innerText = body.error
+
+    // }
 
         }
 
-    } else {
-        Selectors["info_header"].innerText = body.error
 
-    }
+function getStatus(taskID){
+    console.log(taskID)
+    let url = `http://localhost:8002/tasks/${taskID}/`;
+    // console.log(url)
+    fetch(url)
+    .then(res => res.json())
+        .then(data => {
+            console.log(data);
+            const taskStatus = data.task_status;
+
+            const taskResult = data.task_result;
+            // console.log(taskResult)
+            if (taskStatus === 'FAILURE') {
+                console.log('dupa');
+                return false
+            }else if(taskStatus === 'SUCCESS'){
+                console.log(taskResult);
+                return true
+            }
+            setTimeout(function (){
+                console.log(taskStatus);
+                getStatus(taskID);
+            }, 1000)
+        })
 }
-
-
-
+    
 
 
 

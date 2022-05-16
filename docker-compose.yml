@@ -1,8 +1,7 @@
-version: '3.3'
+version: '3.9'
 
 services:
   crm:
-    container_name: crm
     hostname: crm
     build: ./CRM
     command: python3 manage.py runserver crm:8000
@@ -12,13 +11,12 @@ services:
     ports:
       - 8000:8000
     environment:
-      - DJANGO_SECRET=${DJANGO_SECRET}
+      - SECRET_KEY=${SECRET_KEY}
     networks:
       - crmnetwork
 
   api:
     build: ./ExercisesAPI
-    container_name: api
     hostname: api
     command: python3 manage.py runserver api:8001
     restart: always
@@ -27,13 +25,12 @@ services:
     ports:
       - 8001:8001
     environment:
-      - DJANGO_SECRET=${DJANGO_SECRET}
+      - SECRET_KEY=${SECRET_KEY}
     networks:
       - crmnetwork
    
   computing:
     build: ./ExercisesComputing
-    container_name: computing
     hostname: computing
     command: sh -c "python3 manage.py makemigrations && python3 manage.py migrate && python3 manage.py runserver computing:8002"
     restart: always
@@ -42,7 +39,7 @@ services:
     ports:
       - 8002:8002
     environment:
-      - DJANGO_SECRET=${DJANGO_SECRET}
+      - SECRET_KEY=${SECRET_KEY}
     networks:
       - crmnetwork
 
@@ -59,7 +56,6 @@ services:
 
   redis:
     image: redis:6-alpine
-    # hostname: redis
     networks:
       - crmnetwork
 
@@ -72,12 +68,12 @@ services:
     environment:
       - CELERY_BROKER=redis://redis:6379/0
       - CELERY_BACKEND=redis://redis:6379/0
-      # - rabbit
+      - SECRET_KEY=${SECRET_KEY}
+  
     networks:
       - crmnetwork
   
   prometheus:
-    container_name: prometheus
     hostname: prometheus
     image: prom/prometheus
     volumes:

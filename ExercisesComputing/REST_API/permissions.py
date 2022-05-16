@@ -10,7 +10,6 @@ class TokenVerify(permissions.BasePermission):
         data = {'token': header_token}
         if not header_token:
             return False
-
         try:
             TokenVerifySerializer().validate(data)
             return True
