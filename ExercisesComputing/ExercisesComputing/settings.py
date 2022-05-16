@@ -58,13 +58,13 @@ MIDDLEWARE = [
 ROOT_URLCONF = 'ExercisesComputing.urls'
 
 
-# CORS_ORIGIN_WHITELIST = (
-#     'http://crm:8000',
-#     'http://api:8001',
-#     'http://localhost:8000',
-#     'http://0.0.0.0:8000'
-# )
-CORS_ALLOW_ALL_ORIGINS = True
+CORS_ORIGIN_WHITELIST = (
+    'http://crm:8000',
+    'http://api:8001',
+    'http://localhost:8000',
+    # 'http://0.0.0.0:8000'
+)
+# CORS_ALLOW_ALL_ORIGINS = True
 
 TEMPLATES = [
     {

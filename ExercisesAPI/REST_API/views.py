@@ -1,3 +1,4 @@
+from django.http import Http404
 from rest_framework.generics import ListAPIView
 from .models import ExerciseTest
 from .permissions import TokenVerify
@@ -11,4 +12,7 @@ class ExerciseView(ListAPIView):
     def get_queryset(self):
         language = self.request.GET.get('language')
         slug_name = self.request.GET.get('name')
-        return ExerciseTest.objects.filter(exercise__language__name=language).filter(exercise__slug=slug_name)
+        queryset = ExerciseTest.objects.filter(exercise__language__name=language).filter(exercise__slug=slug_name)
+        if queryset:
+            return queryset
+        raise Http404
