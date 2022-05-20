@@ -9,9 +9,9 @@ def has_group(user, group_name):
 
 
 @register.filter(name='has_access')
-def has_access(user, subtopic):
+def has_access(user, topic):
 
-    if user in subtopic.user.all():
+    if user in topic.user.all():
         return True
     return False
 

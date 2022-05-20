@@ -54,7 +54,7 @@
                                             data-bs-target="#Modal"><i class="bi bi-share"></i>
                                     </button>
                                 </div>
-                            {% elif request.user|has_access:subtopic %}
+                            {% elif request.user|has_access:topic %}
                                 <div class="themes-box-list-item">
                                     <li>
                                         <a href="#" class="theme-name available"

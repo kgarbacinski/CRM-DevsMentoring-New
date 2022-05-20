@@ -52,7 +52,6 @@ const toggleDetails = () => {
 }
 
 const showDetails = () => {
-    console.log(Selectors.themeDetails.style.display)
     // if (Selectors.themeDetails.style.display == "none") {
     Selectors.themeDetails.style.display = "block"
     // }
@@ -93,7 +92,6 @@ Selectors.backBtn.addEventListener('click', closeDetails)
 
 
 Selectors.searchShared.addEventListener('keyup', (e) => {
-    console.log(e.target.value);
     const text = e.target.value.toLowerCase();
     searchEngine(Selectors.liShared, text)
 });
@@ -107,7 +105,7 @@ function searchEngine(selector, text) {
             el.style.display = 'block'
         } else {
             el.style.display = 'none'
-        }//     console.log(e)
+        }
 
     })
 }
@@ -138,7 +136,6 @@ async function getFiles(topic_id) {
     let response = await fetch(url);
     if (response.ok) {
         let files = await response.json();
-        console.log(files[0])
         Selectors.filesList.innerHTML = '';
         // Selectors.themeDetails.style.visibility = 'visible';
         Selectors.tittle.innerHTML = files[0].subtopic_name;

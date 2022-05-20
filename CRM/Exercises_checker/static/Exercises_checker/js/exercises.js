@@ -60,7 +60,6 @@ class ExercisesHandler {
 
 
     static handleAllExercises(exercises) {
-        console.log('dupa ', exercises)
         const keys = Object.keys(exercises);
         keys.forEach((key, index) => {
             this.handleEasyExercises(key, exercises[key]);
@@ -107,23 +106,9 @@ function getExercises(path_id){
     ExercisesHandler.cleanExercisesListHtml()
     getJson('/exercises/api/access/exercises/' + path_id)
         .then(response =>{
-            console.log(response)
             QuantityHandler.handleQuantity(response.quantity);
             ExercisesHandler.handleAllExercises(response.exercises);
             QuantityHandler.wholeProgressInfo.style.visibility = "visible"
             QuantityHandler.exerciseTable.style.visibility = "visible"
         })
 }
-
-// async function getPathExercisesInfo(path_id) {
-//     ExercisesHandler.cleanExercisesListHtml()
-//     let url = (`${window.location.origin}exercises/api/access/exercises/${path_id}`)
-//     let response = await fetch(url);
-//     if (response.ok) {
-//         let exercises_info = await response.json();
-//         QuantityHandler.handleQuantity(exercises_info.quantity);
-//         ExercisesHandler.handleAllExercises(exercises_info.exercises);
-//         QuantityHandler.wholeProgressInfo.style.visibility = "visible"
-//         QuantityHandler.exerciseTable.style.visibility = "visible"
-//     }
-// }
