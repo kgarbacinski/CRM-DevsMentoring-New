@@ -8,5 +8,5 @@ from django.http import JsonResponse
 def test_task(token, data_data):
     computing = CodeComputing(header_token = token, data = data_data)
     test = computing.execute_computing()
-    print('aaaa', test)
+    print('dupa1', test)
     return test

@@ -7,23 +7,6 @@ document.getElementById('send-button').addEventListener('click',  function(){
      sendToComputing();
      saveCodeToDB();
 })
-
-
-
-// function getCookie(name) {
-//     let cookieValue = null;
-//     if (document.cookie && document.cookie !== '') {
-//         const cookies = document.cookie.split(';');
-//         for (let i = 0; i < cookies.length; i++) {
-//             const cookie = cookies[i].trim();
-//             if (cookie.substring(0, name.length + 1) === (name + '=')) {
-//                 cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-//                 break;
-//             }
-//         }
-//     }
-//     return cookieValue;
-// }
     
 async function saveCodeToDB(){
     let data = {}
@@ -39,7 +22,6 @@ async function saveCodeToDB(){
             body: JSON.stringify(data)
         }
     response = await fetch(url, config)
-    // console.log(response)
 }
 
 async function getToken(){
@@ -69,9 +51,7 @@ let data = {}
     
     let computing_response = await fetch(computing_url, config)
     let body = await computing_response.json()
-    // console.log(body.task_id);
     if (computing_response.ok){
-        console.log(body.task_id);
         getStatus(body.task_id)
         
         // if(body.done === true){
@@ -94,15 +74,14 @@ let data = {}
 
 
 function getStatus(taskID){
-    console.log(taskID)
+    // console.log(taskID)
     let url = `http://localhost:8002/tasks/${taskID}/`;
     // console.log(url)
     fetch(url)
     .then(res => res.json())
         .then(data => {
-            console.log(data);
+            // console.log(data);
             const taskStatus = data.task_status;
-
             const taskResult = data.task_result;
             // console.log(taskResult)
             if (taskStatus === 'FAILURE') {
@@ -113,7 +92,7 @@ function getStatus(taskID){
                 return true
             }
             setTimeout(function (){
-                console.log(taskStatus);
+                // console.log(taskStatus);
                 getStatus(taskID);
             }, 1000)
         })

@@ -57,7 +57,7 @@ class Handler(ABC):
     def get_response(self):
         if self.passed_test == len(self.tests):
             # return Response({"done":True}, status=status.HTTP_200_OK)
-            return {'aaa': True}
+            return {'done': True}
         # return Response({"done":False, "test_passed": f"{self.passed_test}/{len(self.tests)}"}, status=status.HTTP_200_OK)
         return {"done": False, "test_passed": f"{self.passed_test}/{len(self.tests)}"}
 

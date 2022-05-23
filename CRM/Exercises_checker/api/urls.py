@@ -9,6 +9,5 @@ urlpatterns = [
     path("access/exercises/code/<int:pk>",
          ExerciseCodeView.as_view(), name="exercise_code"),
     path('token/', CreateTokenBaseView.as_view(), name='token_obtain_pair'),
-    # path('token/refresh/', jwt_views.TokenRefreshView.as_view(), name='token_refresh'),
     path('token/verify/', TokenVerifyView.as_view(), name='token_verify')
 ]
