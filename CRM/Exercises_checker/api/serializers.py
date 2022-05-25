@@ -20,4 +20,4 @@ class ChangeExerciseCodeSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = ExerciseStatus
-        fields = ['code']
+        fields = ['code', 'done']

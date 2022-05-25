@@ -1,4 +1,5 @@
 import os
+from re import A
 import secrets
 import subprocess
 from abc import ABC, abstractmethod
@@ -21,31 +22,28 @@ class Handler(ABC):
         self.extension = extension
 
     def create_file(self, test_input):
-        print('DUPA 3')
         unique_name = secrets.token_hex(nbytes=16)
         path = (f'{os.getcwd()}/files/{unique_name}{self.extension}')
-        with open(path, "w+") as file:
+        with open(path, "w") as file:
             file.write(self.exec_code(test_input))
         return file
 
     def check_results(self, file, test_output):
-
         try:
             result = subprocess.check_output([self.terminal_comand, file.name], stderr=STDOUT).strip().decode('utf-8')
-
+            if result == test_output:
+                self.passed_test += 1
         except subprocess.CalledProcessError as e:
             self.handle_error(e)
-
         finally:
             os.remove(file.name)
 
-        if result == test_output:
-            self.passed_test += 1
+        # if result == test_output:
+        #     self.passed_test += 1
 
     def handle_error(self, e):
         error = e.output.strip().decode('utf-8').split('\n')
         error = "".join(error[1:])
-        # return Response({"error": error})
         raise ValidationError({"error": error})
 
     def execute_computing(self):
@@ -56,9 +54,7 @@ class Handler(ABC):
 
     def get_response(self):
         if self.passed_test == len(self.tests):
-            # return Response({"done":True}, status=status.HTTP_200_OK)
-            return {'done': True}
-        # return Response({"done":False, "test_passed": f"{self.passed_test}/{len(self.tests)}"}, status=status.HTTP_200_OK)
+            return {'done': True, 'status': status.HTTP_200_OK}
         return {"done": False, "test_passed": f"{self.passed_test}/{len(self.tests)}"}
 
     @abstractmethod
@@ -67,7 +63,6 @@ class Handler(ABC):
 
 
 class PythonHandler(Handler):
-
     def __init__(self, data, tests):
         super().__init__(data, tests, extension=".py", terminal_command="python3")
 

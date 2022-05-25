@@ -90,10 +90,12 @@ class ExerciseCodeView(APIView):
 
     def patch(self, request, pk):
         exercise_status = ExerciseStatus.objects.filter(id=pk).first()
+        print('DUPA - ', request.data.get('done'))
         # TODO JEŻELI JUZ ZROBIONE NIE AKTUALIZUJ
         if not exercise_status:
             raise Http404
-        data = {"code": request.data.get('code')}
+        data = {"code": request.data.get('code'), "done": request.data.get('done')}
+        # done = {"done": request.data.get('done')}
         serializer = self.serializer_class(
             exercise_status, data=data, partial=True)
         if serializer.is_valid():

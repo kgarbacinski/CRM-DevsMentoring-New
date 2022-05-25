@@ -115,7 +115,6 @@ function getExercises(path_id){
 
 document.addEventListener('DOMContentLoaded', function () {
     let languages = document.querySelectorAll('.nav-link:not(.disabled)')
-    
     if(languages){
         languages[0].classList.add('active');
         let languageId  = languages[0].id.split('-').pop();
