@@ -29,7 +29,7 @@
     <!-- MU: Tu zaczynają się zakładki -->
     <ul class="task-tabs nav nav-tabs" id="myTab" role="tablist">
         {% for language in languages %}
-            {% if request.user|has_group:"Student" and request.user|has_access:language %}
+            {% if request.user|has_group:"Student" and request.user|has_access_language:language %}
                 <li class="task-tab nav-item" role="presentation">
                     <button class="nav-link" id="language-tab-{{ language.id }}" data-bs-toggle="tab"
                             data-bs-target="#tab-python" type="button" role="tab" aria-controls="tab-python"

@@ -39,7 +39,6 @@ class ExerciseView(generics.ListAPIView):
         exercise_quantity = Exercise.objects.filter(language=language).filter(type=type).filter(
             language__user=user).count()
         done_exercise_quantity = queryset.filter(done=True).count()
-        print(queryset)
         return queryset, exercise_quantity, done_exercise_quantity
 
     def list(self, request, *args, **kwargs):
@@ -90,7 +89,6 @@ class ExerciseCodeView(APIView):
 
     def patch(self, request, pk):
         exercise_status = ExerciseStatus.objects.filter(id=pk).first()
-        print('DUPA - ', request.data.get('done'))
         # TODO JEŻELI JUZ ZROBIONE NIE AKTUALIZUJ
         if not exercise_status:
             raise Http404
