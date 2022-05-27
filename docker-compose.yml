@@ -1,0 +1,103 @@
+version: '3.9'
+
+services:
+  crm:
+    hostname: crm
+    build: ./CRM
+    command: python3 manage.py runserver crm:8000
+    restart: always
+    volumes:
+      - ./CRM:/usr/src/app/
+    ports:
+      - 8000:8000
+    environment:
+      - SECRET_KEY=${SECRET_KEY}
+      - EMAIL_USER=${EMAIL_USER}
+      - EMAIL_PASS=${EMAIL_PASS}
+    networks:
+      - crmnetwork
+
+  api:
+    build: ./ExercisesAPI
+    hostname: api
+    command: python3 manage.py runserver api:8001
+    restart: always
+    volumes:
+      - ./ExercisesAPI:/usr/src/app
+    ports:
+      - 8001:8001
+    environment:
+      - SECRET_KEY=${SECRET_KEY}
+    networks:
+      - crmnetwork
+   
+  computing:
+    build: ./ExercisesComputing
+    hostname: computing
+    command: sh -c "python3 manage.py makemigrations && python3 manage.py migrate && python3 manage.py runserver computing:8002"
+    restart: always
+    volumes:
+      - ./ExercisesComputing:/usr/src/app
+    ports:
+      - 8002:8002
+    environment:
+      - SECRET_KEY=${SECRET_KEY}
+    networks:
+      - crmnetwork
+
+  rabbit:
+    image: rabbitmq:latest
+    hostname: broker
+    environment:
+      - RABBITMQ_DEFAULT_USER=admin
+      - RABBITMQ_DEFAULT_PASS=mypass
+    volumes:
+        - /var/lib/rabbitmq
+    networks:
+      - crmnetwork
+
+  redis:
+    image: redis:6-alpine
+    networks:
+      - crmnetwork
+
+  celery:
+    build: ./ExercisesComputing/
+    restart: "no"
+    command: celery -A ExercisesComputing worker -l info
+    volumes:
+      - ./ExercisesComputing:/computing
+    environment:
+      - CELERY_BROKER=redis://redis:6379/0
+      - CELERY_BACKEND=redis://redis:6379/0
+      - SECRET_KEY=${SECRET_KEY}
+  
+    networks:
+      - crmnetwork
+  
+  prometheus:
+    hostname: prometheus
+    image: prom/prometheus
+    volumes:
+      - ./prometheus/:/etc/prometheus/
+    ports:
+      - "9090:9090"
+    networks:
+      - crmnetwork
+
+  grafana:
+    image: grafana/grafana
+    ports:
+      - 3000:3000
+    volumes:
+      - ./grafana/grafana.ini:/etc/grafana/grafana.ini
+      - ./grafana/datasource.yml:/etc/grafana/datasources/datasource.yaml
+    depends_on:
+      - prometheus
+    networks:
+      - crmnetwork
+
+networks:
+  crmnetwork:
+    name: CRM
+    
