@@ -39,7 +39,7 @@ class ExerciseStatus(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     exercise = models.ForeignKey(Exercise, null=True, on_delete=models.SET_NULL)
     done = models.BooleanField(default=False)
-    code = models.TextField(default="", blank= True)
+    code = models.TextField(default="", blank=True)
 
     def __str__(self):
         return f"{self.user.username}, {self.exercise.name}, Done: {self.done}"

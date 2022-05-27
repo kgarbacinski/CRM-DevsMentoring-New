@@ -80,6 +80,7 @@ function getStatus(taskID){
         .then(data => {
             const taskStatus = data.task_status;
             const taskResult = data.task_result;
+            console.log(data);
             if (taskStatus === 'FAILURE') {
                 console.log('dupa');
                 return false

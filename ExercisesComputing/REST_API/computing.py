@@ -31,20 +31,18 @@ class Handler(ABC):
     def check_results(self, file, test_output):
         try:
             result = subprocess.check_output([self.terminal_comand, file.name], stderr=STDOUT).strip().decode('utf-8')
-            if result == test_output:
-                self.passed_test += 1
         except subprocess.CalledProcessError as e:
             self.handle_error(e)
         finally:
             os.remove(file.name)
 
-        # if result == test_output:
-        #     self.passed_test += 1
+        if result == test_output:
+            self.passed_test += 1
 
     def handle_error(self, e):
         error = e.output.strip().decode('utf-8').split('\n')
         error = "".join(error[1:])
-        raise ValidationError({"error": error})
+        return {"error": error}
 
     def execute_computing(self):
         for test in self.tests:
