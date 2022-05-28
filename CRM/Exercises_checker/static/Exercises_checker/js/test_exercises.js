@@ -30,7 +30,7 @@ async function saveCodeToDB(result){
         if (result.done){
             modalBody.textContent = "Congratulations! You've passed all the test"
             myModal.addEventListener('hide.bs.modal', function (event) {
-                window.location.href = `${getBaseUrl('/exercises/')}`;
+                // window.location.href = `${getBaseUrl('/exercises/')}`;
               })
         }else{
             modalBody.textContent = `You passed: ${result.test_passed} tests - Try again.`
@@ -39,7 +39,7 @@ async function saveCodeToDB(result){
     }
 
 }
-
+ 
 async function getToken(){
     let token_url = `${window.location.origin}/exercises/api/token/`
     let token_response = await (await fetch(token_url)).json();
@@ -80,7 +80,7 @@ function getStatus(taskID){
         .then(data => {
             const taskStatus = data.task_status;
             const taskResult = data.task_result;
-            console.log(data);
+            console.log(data.task_result);
             if (taskStatus === 'FAILURE') {
                 console.log('dupa');
                 return false
@@ -90,7 +90,7 @@ function getStatus(taskID){
             }
             setTimeout(function (){
                 getStatus(taskID);
-            }, 1000)
+            }, 100)
         })
 }
     

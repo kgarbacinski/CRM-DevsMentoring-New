@@ -31,29 +31,32 @@ class Handler(ABC):
     def check_results(self, file, test_output):
         try:
             result = subprocess.check_output([self.terminal_comand, file.name], stderr=STDOUT).strip().decode('utf-8')
+            if result == test_output:
+                self.passed_test += 1
         except subprocess.CalledProcessError as e:
-            self.handle_error(e)
+            return self.handle_error(e)
         finally:
             os.remove(file.name)
 
-        if result == test_output:
-            self.passed_test += 1
+        # if result == test_output:
+        #     self.passed_test += 1
 
     def handle_error(self, e):
         error = e.output.strip().decode('utf-8').split('\n')
-        error = "".join(error[1:])
+        # error = "".join(error[1:])
+        print("ERROR - DUPA: ", error)
         return {"error": error}
 
     def execute_computing(self):
         for test in self.tests:
             file = self.create_file(test.get('input'))
-            self.check_results(file, test.get('output'))
-        return self.get_response()
+            test = self.check_results(file, test.get('output'))
+        return self.get_response(test)
 
-    def get_response(self):
+    def get_response(self, test):
         if self.passed_test == len(self.tests):
             return {'done': True, 'status': status.HTTP_200_OK}
-        return {"done": False, "test_passed": f"{self.passed_test}/{len(self.tests)}"}
+        return {"done": False, "test_passed": f"{self.passed_test}/{len(self.tests)}", "error": test}
 
     @abstractmethod
     def exec_code(self):
@@ -67,6 +70,11 @@ class PythonHandler(Handler):
     def exec_code(self, test_input):
         return f"{self.data.get('code')}\nprint({self.data.get('name')}({test_input}))"
 
+    # def handle_error(self, e):
+    #     error_list = e.output.strip().decode('utf-8').split('\n')
+    #     error_line = error_list[0].split(',')[1]
+    #     error_message = error_list[-1]
+    #     return {"error_message": error_message, "error_line": error_line}
 
 class JavaHandler(Handler):
     def __init__(self, data, tests):
@@ -85,8 +93,8 @@ class JavaScriptHandler(Handler):
 
     def handle_error(self, e):
         error = e.output.strip().decode('utf-8').split('\n')
-        error = "".join(error[6:])
-        raise ValidationError({"error": error})
+        # error = "".join(error[6:])
+        return {"error": error[4]}
 
 
 class CodeComputing:
