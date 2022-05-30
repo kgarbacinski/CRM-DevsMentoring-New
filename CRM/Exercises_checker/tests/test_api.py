@@ -27,6 +27,12 @@ class ExerciseViewTest(APITestCase):
             response = self.client.get(reverse("exercise_access", kwargs={"pk":5}))
             self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
+        def test_should_return_empty_lists_for_user_without_access(self)-> None:
+            self.client.force_login(self.user2, backend=None)
+            response = self.client.get(reverse("exercise_access", kwargs={"pk":self.language.id}))
+            excepted_response = {'quantity': {'all_exercises_quantity': 0, 'done_exercises_quantity': 0, 'easy_exercises_quantity': 0, 'done_easy_exercises_quantity': 0, 'medium_exercises_quantity': 0, 'done_medium_exercises_quantity': 0, 'hard_exercises_quantity': 0, 'done_hard_exercises_quantity': 0}, 'exercises': {'easy': [], 'medium': [], 'hard': []}}
+            self.assertEqual(response.data, excepted_response)
+
         def test_should_return_200(self)-> None:
             self.client.force_login(self.user1, backend=None)
             response = self.client.get(reverse("exercise_access", kwargs={"pk":self.language.id}))
