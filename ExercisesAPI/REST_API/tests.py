@@ -18,12 +18,15 @@ class ExerciseViewTest(APITestCase):
                 refresh = RefreshToken.for_user(user)
                 return str(refresh.access_token)
 
+        @classmethod
+        def setUpTestData(cls) -> None:
+                cls.language = Language.objects.create(name="Python")
+                cls.exercise = Exercise.objects.create(name="Palindrome", language=cls.language)
+                cls.test1 = ExerciseTest.objects.create(exercise=cls.exercise, input="kajak", output=True)
+                cls.test2 = ExerciseTest.objects.create(exercise=cls.exercise, input="anna", output=True)
+                cls.test3 = ExerciseTest.objects.create(exercise=cls.exercise, input="lajkonik", output=True)
+
         def setUp(self) -> None:
-                self.language = Language.objects.create(name="Python")
-                self.exercise = Exercise.objects.create(name="Palindrome", language=self.language)
-                self.test1 = ExerciseTest.objects.create(exercise=self.exercise, input="kajak", output=True)
-                self.test2 = ExerciseTest.objects.create(exercise=self.exercise, input="anna", output=True)
-                self.test3 = ExerciseTest.objects.create(exercise=self.exercise, input="lajkonik", output=True)
                 self.token = self.get_token()
         
         def test_should_return_401_no_authorization(self) -> None:
