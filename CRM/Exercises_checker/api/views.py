@@ -1,3 +1,4 @@
+from curses.ascii import HT
 from django.contrib.auth.models import AnonymousUser
 from django.http import Http404
 from rest_framework import generics, status
@@ -39,7 +40,6 @@ class ExerciseView(generics.ListAPIView):
         exercise_quantity = Exercise.objects.filter(language=language).filter(type=type).filter(
             language__user=user).count()
         done_exercise_quantity = queryset.filter(done=True).count()
-        print(queryset)
         return queryset, exercise_quantity, done_exercise_quantity
 
     def list(self, request, *args, **kwargs):
@@ -88,15 +88,21 @@ class ExerciseCodeView(APIView):
     permission_classes = [ExerciseCodePermission]
     serializer_class = ChangeExerciseCodeSerializer
 
-    def patch(self, request, pk):
-        exercise_status = ExerciseStatus.objects.filter(id=pk).first()
-        # TODO JEŻELI JUZ ZROBIONE NIE AKTUALIZUJ
-        if not exercise_status:
-            raise Http404
-        data = {"code": request.data.get('code')}
-        serializer = self.serializer_class(
-            exercise_status, data=data, partial=True)
+    def handle_response(self, exercise_status):
+        data = {"code": self.request.data.get('code')}
+        serializer = self.serializer_class(exercise_status, data=data, partial=True)
         if serializer.is_valid():
-            serializer.save()
+            if exercise_status.done == False:
+                serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+
+    def patch(self, request, pk):
+        exercise_status = ExerciseStatus.objects.filter(id=pk).first()
+        if not exercise_status:
+            raise Http404
+        return self.handle_response(exercise_status)
+
+     

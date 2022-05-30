@@ -17,11 +17,11 @@ class TasksListViewTest(TestCase):
 
     def test_context(self):
         self.client.force_login(self.user, backend=None)
-        response = self.client.get(self.URL)
+        response = self.client.get(TasksListViewTest.URL)
         self.assertIn('languages', response.context)
 
     def test_should_redirect_not_logged_user_to_login_page(self):
-        response = self.client.get(self.URL)
+        response = self.client.get(TasksListViewTest.URL)
         self.assertRedirects(response, '/?next=/exercises/')
 
     def test_call_view_load(self):
@@ -37,10 +37,10 @@ class TaskDetailViewTest(TestCase):
     def setUpTestData(cls):
         cls.user = User.objects.create_user('Jan Kowalski', 'kowalski@gmail.com', 'kowalski')
         cls.language = Language.objects.create(name="Python")
+        cls.exercise = Exercise.objects.create(name="Palindrome", language=cls.language, description="Write Palindrome", type="EASY")
         cls.language.user.add(cls.user)
         cls.language.save()
-        cls.exercise = Exercise.objects.create(name="Palindrome", language=cls.language, description="Write Palindrome", type="EASY")
-        cls.exercise_status = ExerciseStatus.objects.create(user=cls.user, exercise=cls.exercise)
+        cls.exercise_status = ExerciseStatus.objects.get(user=cls.user, exercise=cls.exercise)        
 
     def test_context(self):
         self.client.force_login(self.user, backend=None)
@@ -60,6 +60,7 @@ class TaskDetailViewTest(TestCase):
         self.client.force_login(self.user, backend=None)
         response = self.client.get(reverse("exercise", kwargs={'pk':self.language.id}))
         self.assertTemplateUsed(response, 'Exercises_checker/exercise.html')
+
 
 
     
