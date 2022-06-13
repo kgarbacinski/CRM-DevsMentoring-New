@@ -27,6 +27,8 @@ urlpatterns = [
     path('calendar/', include('Meetings_calendar.urls')),
     path('exercises/', include('Exercises_checker.urls')),
     path('files/', include('Files_organizer.urls')),
+    path('system/', include('System_administration.urls')),
+    path('payment/', include('Payments_system.urls')),
     re_path(r'^favicon\.ico$', favicon_view),
 ]
 

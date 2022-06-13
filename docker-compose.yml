@@ -12,6 +12,8 @@ services:
       - 8000:8000
     environment:
       - SECRET_KEY=${SECRET_KEY}
+      - EMAIL_USER=${EMAIL_USER}
+      - EMAIL_PASS=${EMAIL_PASS}
     networks:
       - crmnetwork
 

@@ -9,9 +9,15 @@ def has_group(user, group_name):
 
 
 @register.filter(name='has_access')
-def has_access(user, subtopic):
+def has_access(user, topic):
+    if user in topic.user.all():
+        return True
+    return False
 
-    if user in subtopic.user.all():
+
+@register.filter(name='has_access_language')
+def has_access_language(user, language):
+    if user in language.user.all():
         return True
     return False
 

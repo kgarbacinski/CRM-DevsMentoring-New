@@ -15,9 +15,9 @@ const closePopup = () => {
 resetLink.addEventListener('click', showPopup)
 cancelBtn.addEventListener('click', closePopup)
 
-resetBtn.addEventListener('click', e => {
-    e.preventDefault();
-})
+// resetBtn.addEventListener('click', e => {
+//     e.preventDefault();
+// })
 cancelBtn.addEventListener('click', e => {
     e.preventDefault();
 })

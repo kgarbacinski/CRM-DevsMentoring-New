@@ -5,30 +5,13 @@ let Selectors = { "code_field" : document.getElementById("code-form").elements['
 
 document.getElementById('send-button').addEventListener('click',  function(){
      sendToComputing();
-     saveCodeToDB();
 })
-
-
-
-function getCookie(name) {
-    let cookieValue = null;
-    if (document.cookie && document.cookie !== '') {
-        const cookies = document.cookie.split(';');
-        for (let i = 0; i < cookies.length; i++) {
-            const cookie = cookies[i].trim();
-            if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                break;
-            }
-        }
-    }
-    return cookieValue;
-}
     
-async function saveCodeToDB(){
+async function saveCodeToDB(result){
     let data = {}
     data.code = Selectors['code_field'].value
-    let url = `${window.location.origin}/exercises/api/access/exercises/code/${exercise_status_id}`
+    data.done = result.done
+    let url = `${getBaseUrl('/exercises/api/access/exercises/code/')}${exercise_status_id}`
     config = {
             method: 'PATCH',
             headers: {
@@ -39,7 +22,22 @@ async function saveCodeToDB(){
             body: JSON.stringify(data)
         }
     response = await fetch(url, config)
-    // console.log(response)
+    if (response.ok){        
+        let myModal = document.getElementById('myModal');
+        var modal = bootstrap.Modal.getOrCreateInstance(myModal);
+        let modalBody = document.querySelector('#myModal .modal-body');
+        
+        if (result.done){
+            modalBody.textContent = "Congratulations! You've passed all the test"
+            myModal.addEventListener('hide.bs.modal', function (event) {
+                window.location.href = `${getBaseUrl('/exercises/')}`;
+              })
+        }else{
+            modalBody.textContent = `You passed: ${result.test_passed} tests - Try again.`
+        }
+        modal.show(myModal)
+    }
+
 }
 
 async function getToken(){
@@ -69,51 +67,28 @@ let data = {}
     
     let computing_response = await fetch(computing_url, config)
     let body = await computing_response.json()
-    // console.log(body.task_id);
     if (computing_response.ok){
-        console.log(body.task_id);
-        getStatus(body.task_id)
-        
-        // if(body.done === true){
-        //     window.alert("OK!")
-
-        // }
-        // else if (body.done=== false){
-        //     window.alert(`TEST PASSED:${body.test_passed}`)
-
-        // }
-            
-        }
-
-    // else{
-    //         Selectors["info_header"].innerText = body.error
-
-    // }
-
-        }
+        getStatus(body.task_id)  
+    }
+}
 
 
 function getStatus(taskID){
-    console.log(taskID)
     let url = `http://localhost:8002/tasks/${taskID}/`;
-    // console.log(url)
     fetch(url)
     .then(res => res.json())
         .then(data => {
-            console.log(data);
             const taskStatus = data.task_status;
-
             const taskResult = data.task_result;
-            // console.log(taskResult)
+            console.log(data);
             if (taskStatus === 'FAILURE') {
                 console.log('dupa');
                 return false
             }else if(taskStatus === 'SUCCESS'){
-                console.log(taskResult);
+                saveCodeToDB(data.task_result)
                 return true
             }
             setTimeout(function (){
-                console.log(taskStatus);
                 getStatus(taskID);
             }, 1000)
         })

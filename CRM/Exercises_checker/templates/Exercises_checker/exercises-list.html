@@ -29,21 +29,20 @@
     <!-- MU: Tu zaczynają się zakładki -->
     <ul class="task-tabs nav nav-tabs" id="myTab" role="tablist">
         {% for language in languages %}
-            {% if request.user|has_group:"Student" and request.user|has_access:language or request.user.is_superuser %}
+            {% if request.user|has_group:"Student" and request.user|has_access_language:language %}
                 <li class="task-tab nav-item" role="presentation">
-                    <button class="nav-link" id="python-tab" data-bs-toggle="tab"
+                    <button class="nav-link" id="language-tab-{{ language.id }}" data-bs-toggle="tab"
                             data-bs-target="#tab-python" type="button" role="tab" aria-controls="tab-python"
                             aria-selected="true"
                             onclick="getExercises('{{ language.id }}');return false;">{{ language.name }}</button>
                 </li>
             {% else %}
                 <li class="task-tab nav-item" role="presentation">
-                    <button class="nav-link disabled" id="python-tab" data-bs-toggle="tab"
+                    <button class="nav-link disabled" id="{{ language.name }}-tab" data-bs-toggle="tab"
                             data-bs-target="#tab-python" type="button" role="tab" aria-controls="tab-python"
                             aria-selected="true">{{ language.name }}  </button>
                 </li>
             {% endif %}
-
         {% endfor %}
     </ul>
 
@@ -57,9 +56,8 @@
                             class="done-easy"></span>/<span
                             class="total-easy"></span></span></h3>
                         {#single exercise#}
-                    <div class="tasks-list-box tasks-list-box-easy">
-
-                    </div>
+                    <div class="tasks-list-box tasks-list-box-easy"></div>
+                    
                 </div>
 
                 <div class="col-sm-12 col-md-4 medium-level medium-level-python p-4">
@@ -67,19 +65,16 @@
                             class="done-medium"></span>/<span
                             class="total-medium"></span></span></h3>
 
-                    <div class="tasks-list-box tasks-list-box-medium">
-
-                    </div>
+                    <div class="tasks-list-box tasks-list-box-medium"></div>
                 </div>
 
                 <div class="col-sm-12 col-md-4 hard-level hard-level-python p-4">
                     <h3 class="level-title fs-4 mt-5 mb-3">Hard <span class="count-tasks"><span
                             class="done-hard">0</span>/<span
                             class="total-hard">20</span></span></h3>
-                    <div class="tasks-list-box tasks-list-box-hard">
 
+                    <div class="tasks-list-box tasks-list-box-hard"></div>
 
-                    </div>
                 </div>
                 <!-- MU: stop - zakładka -->
 

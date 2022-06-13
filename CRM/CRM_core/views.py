@@ -31,7 +31,6 @@ class LoginView(PasswordResetView):
             user = LoginForm(request.POST)
             if user.is_valid():
                 return self.authenticate_user(user)
-
         elif 'send_reset' in request.POST:
             reset_form = ResetRequestForm(request.POST)
 
