@@ -1,6 +1,6 @@
 import enum
 import re
-from typing import Dict, Union, Tuple
+from typing import Dict, Tuple, Union
 
 from django.contrib.auth.models import User
 from django.db.models import QuerySet
@@ -12,13 +12,18 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.request import Request
 from rest_framework.response import Response
 
+from ..models import Document, Subject, Topic
 from .permissions import FileAccessPermission
-from .serializers import DocumentSerializer, AccessToFileSerializer, AccessToSubjectSerializer, UserSearchBoxSerializer
-from ..models import Document, Topic, Subject
+from .serializers import (
+    AccessToFileSerializer,
+    AccessToSubjectSerializer,
+    DocumentSerializer,
+    UserSearchBoxSerializer,
+)
 
 
 class Patterns:
-    whole_name_pattern = r'\w+\s\w+'
+    whole_name_pattern = r"\w+\s\w+"
 
 
 class DocumentView(generics.ListAPIView):
@@ -26,14 +31,17 @@ class DocumentView(generics.ListAPIView):
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self) -> QuerySet[Document]:
-        subtopic_id = self.kwargs['pk']
+        subtopic_id = self.kwargs["pk"]
         try:
             topic = Topic.objects.get(id=subtopic_id)
         except Topic.DoesNotExist:
             raise Http404
         users = topic.user.all()
-        if self.request.user in users or self.request.user.is_superuser or self.request.user.groups.filter(
-                name='Mentor').exists():
+        if (
+                self.request.user in users
+                or self.request.user.is_superuser
+                or self.request.user.groups.filter(name="Mentor").exists()
+        ):
             documents = Document.objects.filter(topic_id=subtopic_id).all()
             if not documents:
                 raise Http404
@@ -41,14 +49,16 @@ class DocumentView(generics.ListAPIView):
         raise PermissionDenied
 
 
-class HasAccessToFileView(generics.ListAPIView, mixins.DestroyModelMixin, mixins.CreateModelMixin):
+class HasAccessToFileView(
+    generics.ListAPIView, mixins.DestroyModelMixin, mixins.CreateModelMixin
+):
     serializer_class = AccessToFileSerializer
     permission_classes = [FileAccessPermission]
-    queryset = User.objects.filter(groups__name='Student').all()
+    queryset = User.objects.filter(groups__name="Student").all()
 
     def get_serializer_context(self) -> Dict[str, Union[None, Request, GenericAPIView]]:
         context = super().get_serializer_context()
-        subtopic_id = self.kwargs['pk']
+        subtopic_id = self.kwargs["pk"]
         try:
             topic = Topic.objects.get(id=subtopic_id)
         except Topic.DoesNotExist:
@@ -56,49 +66,55 @@ class HasAccessToFileView(generics.ListAPIView, mixins.DestroyModelMixin, mixins
         context["topic"] = topic
         return context
 
-    def __get_subtopic_and_user(self, subtopic_id, user_id) -> Union[Response, Tuple[Topic, User]]:
+    def __get_subtopic_and_user(
+            self, subtopic_id, user_id
+    ) -> Union[Response, Tuple[Topic, User]]:
         if not subtopic_id or not user_id:
             return Response(status=status.HTTP_400_BAD_REQUEST)
         try:
             topic = Topic.objects.get(id=subtopic_id)
             user = User.objects.get(id=user_id)
-        except (Topic.DoesNotExist, User.DoesNotExist) as e:
+        except (Topic.DoesNotExist, User.DoesNotExist):
             raise Http404
         return topic, user
 
     def post(self, request, *args, **kwargs) -> Response:
-        subtopic_id = self.kwargs['pk']
+        subtopic_id = self.kwargs["pk"]
         user_id = request.data
         topic, user = self.__get_subtopic_and_user(subtopic_id, user_id)
         topic.user.add(user)
         return Response(status=status.HTTP_201_CREATED)
 
     def delete(self, request, *args, **kwargs) -> Response:
-        subtopic_id = self.kwargs['pk']
+        subtopic_id = self.kwargs["pk"]
         user_id = request.data
         topic, user = self.__get_subtopic_and_user(subtopic_id, user_id)
         topic.user.remove(user)
         return Response(status=status.HTTP_200_OK)
 
 
-class HasAccessToSubjectView(generics.ListAPIView, mixins.DestroyModelMixin, mixins.CreateModelMixin):
+class HasAccessToSubjectView(
+    generics.ListAPIView, mixins.DestroyModelMixin, mixins.CreateModelMixin
+):
     serializer_class = AccessToSubjectSerializer
     permission_classes = [FileAccessPermission]
-    queryset = User.objects.filter(groups__name='Student').all()
+    queryset = User.objects.filter(groups__name="Student").all()
 
-    def __get_subject_and_user(self, subject_id, user_id) -> Union[Response, Tuple[Subject, User]]:
+    def __get_subject_and_user(
+            self, subject_id, user_id
+    ) -> Union[Response, Tuple[Subject, User]]:
         if not subject_id or not user_id:
             return Response(status=status.HTTP_400_BAD_REQUEST)
         try:
             subject = Subject.objects.get(id=subject_id)
             user = User.objects.get(id=user_id)
-        except (Topic.DoesNotExist, User.DoesNotExist) as e:
+        except (Topic.DoesNotExist, User.DoesNotExist):
             raise Http404
         return subject, user
 
     def get_serializer_context(self) -> Dict[str, Union[None, Request, GenericAPIView]]:
         context = super().get_serializer_context()
-        subject = self.kwargs['pk']
+        subject = self.kwargs["pk"]
         try:
             subject = Subject.objects.get(id=subject)
         except Subject.DoesNotExist:
@@ -107,7 +123,7 @@ class HasAccessToSubjectView(generics.ListAPIView, mixins.DestroyModelMixin, mix
         return context
 
     def post(self, request, *args, **kwargs) -> Response:
-        subject_id = self.kwargs['pk']
+        subject_id = self.kwargs["pk"]
         user_id = request.data
         subject, user = self.__get_subject_and_user(subject_id, user_id)
         subtopics_set = subject.subtopic_set.all()
@@ -117,7 +133,7 @@ class HasAccessToSubjectView(generics.ListAPIView, mixins.DestroyModelMixin, mix
         return Response(status=status.HTTP_201_CREATED)
 
     def delete(self, request, *args, **kwargs) -> Response:
-        subject_id = self.kwargs['pk']
+        subject_id = self.kwargs["pk"]
         user_id = request.data
         subject, user = self.__get_subject_and_user(subject_id, user_id)
         subtopics_set = subject.subtopic_set.filter(user=user).all()
@@ -131,7 +147,7 @@ class UserSearchBoxSubtopicView(generics.ListAPIView):
     permission_classes = [FileAccessPermission]
 
     class Access(enum.Enum):
-        HAS_ACCESS = "1",
+        HAS_ACCESS = ("1",)
         NO_ACCESS = "0"
 
         @classmethod
@@ -141,13 +157,24 @@ class UserSearchBoxSubtopicView(generics.ListAPIView):
             elif val in "0":
                 return cls.NO_ACCESS
 
-    def __get_user_by_name_or_surname_access(self, text, topic, filter_by) -> QuerySet[User]:
-        if filter_by == 'first_name':
-            return User.objects.filter(first_name__contains=text).filter(groups__name='Student').filter(
-                topic=topic).all()
+    def __get_user_by_name_or_surname_access(
+            self, text, topic, filter_by
+    ) -> QuerySet[User]:
+        if filter_by == "first_name":
+            return (
+                User.objects.filter(first_name__contains=text)
+                .filter(groups__name="Student")
+                .filter(topic=topic)
+                .all()
+            )
 
         elif filter_by == "last_name":
-            return User.objects.filter(last_name__contains=text).filter(groups__name='Student').filter(topic=topic).all()
+            return (
+                User.objects.filter(last_name__contains=text)
+                .filter(groups__name="Student")
+                .filter(topic=topic)
+                .all()
+            )
 
     def with_access(self, text, topic) -> QuerySet[User]:
         filter = self.__get_user_by_name_or_surname_access
@@ -155,26 +182,38 @@ class UserSearchBoxSubtopicView(generics.ListAPIView):
             space = text.find(" ")
             first_text = text[:space]
             second_text = text[space + 1:]
-            queryset = filter(text=first_text, topic=topic, filter_by="first_name") or \
-                filter(text=second_text, topic=topic, filter_by="first_name") or \
-                filter(text=first_text, topic=topic, filter_by="last_name") or \
-                filter(text=second_text, topic=topic,
-                       filter_by='last_name')
+            queryset = (
+                    filter(text=first_text, topic=topic, filter_by="first_name")
+                    or filter(text=second_text, topic=topic, filter_by="first_name")
+                    or filter(text=first_text, topic=topic, filter_by="last_name")
+                    or filter(text=second_text, topic=topic, filter_by="last_name")
+            )
 
         else:
-            queryset = filter(text=text, topic=topic, filter_by="first_name") or \
-                filter(text=text, topic=topic, filter_by="last_name")
+            queryset = filter(text=text, topic=topic, filter_by="first_name") or filter(
+                text=text, topic=topic, filter_by="last_name"
+            )
 
         return queryset
 
-    def __get__user_by_name_or_surname_no_access(self, text, topic, filter_by) -> QuerySet[User]:
-        if filter_by == 'first_name':
-            return User.objects.exclude(topic=topic).filter(first_name__contains=text).filter(
-                groups__name='Student').all()
+    def __get__user_by_name_or_surname_no_access(
+            self, text, topic, filter_by
+    ) -> QuerySet[User]:
+        if filter_by == "first_name":
+            return (
+                User.objects.exclude(topic=topic)
+                .filter(first_name__contains=text)
+                .filter(groups__name="Student")
+                .all()
+            )
 
         elif filter_by == "last_name":
-            return User.objects.exclude(topic=topic).filter(last_name__contains=text).filter(
-                groups__name='Student').all()
+            return (
+                User.objects.exclude(topic=topic)
+                .filter(last_name__contains=text)
+                .filter(groups__name="Student")
+                .all()
+            )
 
     def no_access(self, text, topic) -> QuerySet[User]:
         filter = self.__get__user_by_name_or_surname_no_access
@@ -182,21 +221,23 @@ class UserSearchBoxSubtopicView(generics.ListAPIView):
             space = text.find(" ")
             first_text = text[:space]
             second_text = text[space + 1:]
-            queryset = filter(text=first_text, topic=topic, filter_by="first_name") or \
-                filter(text=second_text, topic=topic, filter_by="first_name") or \
-                filter(text=first_text, topic=topic, filter_by="last_name") or \
-                filter(text=second_text, topic=topic,
-                       filter_by='last_name')
+            queryset = (
+                    filter(text=first_text, topic=topic, filter_by="first_name")
+                    or filter(text=second_text, topic=topic, filter_by="first_name")
+                    or filter(text=first_text, topic=topic, filter_by="last_name")
+                    or filter(text=second_text, topic=topic, filter_by="last_name")
+            )
 
         else:
-            queryset = filter(text=text, topic=topic, filter_by="first_name") or \
-                filter(text=text, topic=topic, filter_by="last_name")
+            queryset = filter(text=text, topic=topic, filter_by="first_name") or filter(
+                text=text, topic=topic, filter_by="last_name"
+            )
         return queryset
 
     def get_queryset(self) -> QuerySet[User]:
-        subtopic_id = self.kwargs['pk']
-        text = self.request.GET.get('text')
-        access = self.request.GET.get('access')
+        subtopic_id = self.kwargs["pk"]
+        text = self.request.GET.get("text")
+        access = self.request.GET.get("access")
         access = self.Access.from_str(access)
 
         try:
@@ -218,7 +259,7 @@ class UserSearchBoxSubjectView(generics.ListAPIView):
     permission_classes = [FileAccessPermission]
 
     class Access(enum.Enum):
-        HAS_ACCESS = "1",
+        HAS_ACCESS = ("1",)
         NO_ACCESS = "0"
 
         @classmethod
@@ -229,12 +270,19 @@ class UserSearchBoxSubjectView(generics.ListAPIView):
                 return cls.NO_ACCESS
 
     def __get_user_by_name_or_surname_access(self, text, filter_by) -> QuerySet[User]:
-        if filter_by == 'first_name':
-            return User.objects.filter(first_name__contains=text).filter(groups__name='Student').all()
+        if filter_by == "first_name":
+            return (
+                User.objects.filter(first_name__contains=text)
+                .filter(groups__name="Student")
+                .all()
+            )
 
         elif filter_by == "last_name":
-            return User.objects.filter(last_name__contains=text).filter(
-                groups__name='Student').all()
+            return (
+                User.objects.filter(last_name__contains=text)
+                .filter(groups__name="Student")
+                .all()
+            )
 
     def __iterate_queryset(self, queryset, subtopics, access) -> list:
         if not queryset:
@@ -261,14 +309,17 @@ class UserSearchBoxSubjectView(generics.ListAPIView):
             space = text.find(" ")
             first_text = text[:space]
             second_text = text[space + 1:]
-            queryset = filter(text=first_text, filter_by="first_name") or \
-                filter(text=second_text, filter_by="first_name") or \
-                filter(text=first_text, filter_by="last_name") or \
-                filter(text=second_text, filter_by='last_name')
+            queryset = (
+                    filter(text=first_text, filter_by="first_name")
+                    or filter(text=second_text, filter_by="first_name")
+                    or filter(text=first_text, filter_by="last_name")
+                    or filter(text=second_text, filter_by="last_name")
+            )
 
         else:
-            queryset = filter(text=text, filter_by="first_name") or \
-                filter(text=text, filter_by="last_name")
+            queryset = filter(text=text, filter_by="first_name") or filter(
+                text=text, filter_by="last_name"
+            )
 
         return queryset, subtopics
 
@@ -281,9 +332,9 @@ class UserSearchBoxSubjectView(generics.ListAPIView):
         return self.__iterate_queryset(queryset, subtopics, False)
 
     def get_queryset(self) -> list:
-        subject_id = self.kwargs['pk']
-        text = self.request.GET.get('text')
-        access = self.request.GET.get('access')
+        subject_id = self.kwargs["pk"]
+        text = self.request.GET.get("text")
+        access = self.request.GET.get("access")
         access = self.Access.from_str(access)
 
         try:

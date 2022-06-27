@@ -1,14 +1,14 @@
 import uuid
+from datetime import datetime
 from decimal import Decimal
-from django.utils import timezone
 
+from dateutil import relativedelta
+from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
 from django.db import models
-from django.contrib.auth.models import User
-from dateutil import relativedelta
 from django.urls import reverse
+from django.utils import timezone
 from phonenumber_field.modelfields import PhoneNumberField
-from datetime import datetime
 
 
 class Path(models.Model):
@@ -21,11 +21,15 @@ class Path(models.Model):
 
 class Mentor(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    user_image = models.ImageField(upload_to='user_avatar', default='user.png', null=True, blank=True)
+    user_image = models.ImageField(
+        upload_to="user_avatar", default="user.png", null=True, blank=True
+    )
     max_students = models.IntegerField(default=1)
 
     def count_all_meetings(self):
-        current_hour = timezone.make_aware(datetime.now(), timezone.get_current_timezone())
+        current_hour = timezone.make_aware(
+            datetime.now(), timezone.get_current_timezone()
+        )
         return self.meeting_set.filter(date__lte=current_hour).count()
 
     def count_meetings_in_current_month(self):
@@ -48,7 +52,7 @@ class Mentor(models.Model):
         super().save(*args, **kwargs)
 
     def __str__(self):
-        return f'{self.user.first_name} {self.user.last_name}'
+        return f"{self.user.first_name} {self.user.last_name}"
 
 
 class Student(models.Model):
@@ -56,7 +60,9 @@ class Student(models.Model):
     mentor = models.ManyToManyField(Mentor)
     enrollmentDate = models.DateTimeField(auto_now_add=True, null=True, blank=True)
     path = models.ForeignKey(Path, on_delete=models.PROTECT)
-    user_image = models.ImageField(upload_to='user_avatar', default='user.png', null=True, blank=True)
+    user_image = models.ImageField(
+        upload_to="user_avatar", default="user.png", null=True, blank=True
+    )
     no_month = models.IntegerField(default=1)
 
     def get_next_payment(self):
@@ -65,7 +71,9 @@ class Student(models.Model):
         return "not paid"
 
     def count_all_meetings(self):
-        current_hour = timezone.make_aware(datetime.now(), timezone.get_current_timezone())
+        current_hour = timezone.make_aware(
+            datetime.now(), timezone.get_current_timezone()
+        )
         return self.meeting_set.filter(date__lte=current_hour).count()
 
     def get_remaining_meetings(self):
@@ -93,4 +101,4 @@ class Student(models.Model):
         super().save(*args, **kwargs)
 
     def __str__(self):
-        return f'{self.user.first_name} {self.user.last_name}'
+        return f"{self.user.first_name} {self.user.last_name}"

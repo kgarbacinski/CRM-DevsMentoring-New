@@ -1,0 +1,62 @@
+version: 2.1
+
+orbs:
+  python: circleci/python@2.0.3
+
+jobs:
+  black:
+    executor:
+      name: python/default
+      tag: "3.9"
+    steps:
+      - checkout
+      - python/install-packages:
+          args: black
+          pkg-manager: pip
+      - run:
+          command: |
+            black --check CRM ExercisesAPI ExercisesComputing
+          name: Black it
+
+  linter:
+    executor:
+      name: python/default
+      tag: "3.9"
+    steps:
+      - checkout
+      - python/install-packages:
+            pkg-manager: pip
+      - python/install-packages:
+          args:  flake8 flake8-print
+          pkg-manager: pip
+      - run: pipenv run flake8 --version
+      - run:
+          command: |
+            flake8 -v CRM ExercisesAPI ExercisesComputing
+          name: Lint it
+
+  unit_tests:
+    executor:
+      name: python/default
+      tag: "3.9"
+    steps:
+      - checkout
+      - python/install-packages:
+          args: tox
+          pkg-manager: pip
+      - run: tox --version
+      - run:
+          command: |
+            tox -e CRM ExercisesAPI
+          name: Unit test
+
+workflows:
+  main:
+    jobs:
+      - black
+      - linter
+      - unit_tests:
+          requires:
+            - black
+            - linter
+

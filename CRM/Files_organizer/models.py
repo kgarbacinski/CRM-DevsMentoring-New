@@ -5,8 +5,8 @@ from django.utils.text import slugify
 
 class ProgrammingPath(models.Model):
     name = models.CharField(max_length=50)
-    logo_image = models.ImageField(upload_to='path_images')
-    path_image = models.ImageField(upload_to='path_images')
+    logo_image = models.ImageField(upload_to="path_images")
+    path_image = models.ImageField(upload_to="path_images")
     about = models.TextField()
     slug = models.SlugField()
 
@@ -52,11 +52,11 @@ class Topic(models.Model):
 
 class Document(models.Model):
     class Type(models.TextChoices):
-        THEORY = 'THEORY'
-        EXERCISE = 'EXERCISE'
+        THEORY = "THEORY"
+        EXERCISE = "EXERCISE"
         EXTRA = "EXTRA"
 
-    file = models.FileField(upload_to='files')
+    file = models.FileField(upload_to="files")
     name = models.CharField(max_length=50)
     creator = models.ForeignKey(User, on_delete=models.PROTECT)
     topic = models.ForeignKey(Topic, on_delete=models.PROTECT)

@@ -28,7 +28,4 @@ class ExerciseTest(models.Model):
     output = models.CharField(max_length=200)
 
     def __str__(self):
-        return f'{self.exercise.name}, {self.exercise.language.name}'
-
-
-
+        return f"{self.exercise.name}, {self.exercise.language.name}"

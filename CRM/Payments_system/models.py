@@ -1,11 +1,9 @@
+from CRM_core.models import Student
 from dateutil.relativedelta import relativedelta
 from django.db import models
 
-
 # Create your models here.
 from phonenumber_field.modelfields import PhoneNumberField
-
-from CRM_core.models import Student
 
 
 class PaymentInfo(models.Model):
@@ -17,7 +15,7 @@ class PaymentInfo(models.Model):
     street = models.CharField(max_length=200)
     postCode = models.CharField(max_length=6)
     town = models.CharField(max_length=20)
-    country = models.CharField(max_length=20, default='Poland')
+    country = models.CharField(max_length=20, default="Poland")
     phone = PhoneNumberField()
     email = models.EmailField()
     comment = models.TextField(null=True, blank=True)
