@@ -1,5 +1,13 @@
+from curses.ascii import HT
+
 from django.contrib.auth.models import AnonymousUser
 from django.http import Http404
+from Exercises_checker.api.permissions import ExerciseCodePermission
+from Exercises_checker.api.serializers import (
+    ChangeExerciseCodeSerializer,
+    PathExerciseSerializer,
+)
+from Exercises_checker.models import Exercise, ExerciseStatus, Language
 from rest_framework import generics, status
 from rest_framework.generics import get_object_or_404
 from rest_framework.permissions import IsAuthenticated
@@ -7,6 +15,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
 
+<<<<<<< HEAD
 from Exercises_checker.api.permissions import ExerciseCodePermission
 from Exercises_checker.api.serializers import (
     PathExerciseSerializer,
@@ -14,6 +23,8 @@ from Exercises_checker.api.serializers import (
 )
 from Exercises_checker.models import Language, Exercise, ExerciseStatus
 
+=======
+>>>>>>> feat/Add-pre-hooks
 
 class ExerciseView(generics.ListAPIView):
     permission_classes = [IsAuthenticated]
@@ -118,11 +129,20 @@ class ExerciseCodeView(APIView):
     permission_classes = [ExerciseCodePermission]
     serializer_class = ChangeExerciseCodeSerializer
 
+    def handle_response(self, exercise_status):
+        data = {"code": self.request.data.get("code")}
+        serializer = self.serializer_class(exercise_status, data=data, partial=True)
+        if serializer.is_valid():
+            if not exercise_status.done:
+                serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
     def patch(self, request, pk):
         exercise_status = ExerciseStatus.objects.filter(id=pk).first()
-        # TODO JEŻELI JUZ ZROBIONE NIE AKTUALIZUJ
         if not exercise_status:
             raise Http404
+<<<<<<< HEAD
         data = {"code": request.data.get("code"), "done": request.data.get("done")}
         # done = {"done": request.data.get('done')}
         serializer = self.serializer_class(exercise_status, data=data, partial=True)
@@ -130,3 +150,6 @@ class ExerciseCodeView(APIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+=======
+        return self.handle_response(exercise_status)
+>>>>>>> feat/Add-pre-hooks

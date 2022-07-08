@@ -1,6 +1,6 @@
-from django.db import models
+from CRM_core.models import Mentor, Path, Student
 from django.contrib.auth.models import User
-from CRM_core.models import Mentor, Student, Path
+from django.db import models
 
 
 # Create your models here.
@@ -18,14 +18,15 @@ class Meeting(models.Model):
 
 
 class Note(models.Model):
-    meeting = models.ForeignKey(Meeting, on_delete=models.CASCADE, related_name="notes", blank=True, null=True)
+    meeting = models.ForeignKey(
+        Meeting, on_delete=models.CASCADE, related_name="notes", blank=True, null=True
+    )
     author = models.ForeignKey(User, on_delete=models.CASCADE)
     title = models.CharField(max_length=50, null=True, blank=True)
     text = models.TextField(null=True, blank=True)
 
     class Meta:
-        unique_together = [['meeting', 'author']]
+        unique_together = [["meeting", "author"]]
 
     def __str__(self):
         return self.text
-

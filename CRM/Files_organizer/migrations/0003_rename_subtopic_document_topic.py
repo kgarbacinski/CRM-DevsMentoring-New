@@ -6,13 +6,13 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('Files_organizer', '0002_rename_subtopic_topic'),
+        ("Files_organizer", "0002_rename_subtopic_topic"),
     ]
 
     operations = [
         migrations.RenameField(
-            model_name='document',
-            old_name='subtopic',
-            new_name='topic',
+            model_name="document",
+            old_name="subtopic",
+            new_name="topic",
         ),
     ]

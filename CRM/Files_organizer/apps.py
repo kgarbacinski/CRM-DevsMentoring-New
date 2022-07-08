@@ -2,5 +2,5 @@ from django.apps import AppConfig
 
 
 class FilesOrganizerConfig(AppConfig):
-    default_auto_field = 'django.db.models.BigAutoField'
-    name = 'Files_organizer'
+    default_auto_field = "django.db.models.BigAutoField"
+    name = "Files_organizer"

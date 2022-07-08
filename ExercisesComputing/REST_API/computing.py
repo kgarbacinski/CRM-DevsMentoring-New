@@ -5,12 +5,13 @@ import subprocess
 from abc import ABC, abstractmethod
 from asyncio.subprocess import STDOUT
 from typing import Dict, List
+
 import requests
 from django.conf import settings
+from django.http import JsonResponse
 from rest_framework import status
 from rest_framework.exceptions import ValidationError
 from rest_framework.response import Response
-from django.http import JsonResponse
 
 
 class Handler(ABC):
@@ -30,9 +31,14 @@ class Handler(ABC):
 
     def check_results(self, file, test_output):
         try:
-            result = subprocess.check_output([self.terminal_comand, file.name], stderr=STDOUT).strip().decode('utf-8')
-            if result == test_output:
-                self.passed_test += 1
+            result = (
+                subprocess.check_output(
+                    [self.terminal_comand, file.name], stderr=STDOUT
+                )
+                .strip()
+                .decode("utf-8")
+            )
+
         except subprocess.CalledProcessError as e:
             return self.handle_error(e)
         finally:
@@ -107,13 +113,19 @@ class JavaScriptHandler(Handler):
 
 
 class CodeComputing:
-    HANDLERS = {"Python": PythonHandler, "Java": JavaHandler, "JavaScript": JavaScriptHandler}
+    HANDLERS = {
+        "Python": PythonHandler,
+        "Java": JavaHandler,
+        "JavaScript": JavaScriptHandler,
+    }
 
     def __init__(self, header_token: str, data: Dict):
         self.data = data
         self.header_token = header_token
         self.tests = self.get_tests()
-        self.handler = CodeComputing.HANDLERS.get(self.data.get("language"))(self.data, self.tests)
+        self.handler = CodeComputing.HANDLERS.get(self.data.get("language"))(
+            self.data, self.tests
+        )
 
     def get_tests(self):
         tests = requests.get(settings.API_URL,

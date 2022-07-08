@@ -19,13 +19,11 @@ class Exercise(models.Model):
     slug = models.SlugField()
 
     class Type(models.TextChoices):
-        EASY = 'EASY'
-        MEDIUM = 'MEDIUM'
+        EASY = "EASY"
+        MEDIUM = "MEDIUM"
         HARD = "HARD"
 
-    type = models.CharField(
-        max_length=10,
-        choices=Type.choices)
+    type = models.CharField(max_length=10, choices=Type.choices)
 
     def __str__(self):
         return f"{self.name, self.language.name}"
@@ -51,11 +49,13 @@ class Hint(models.Model):
 
 
 def create_exercise_status(sender, instance, action, reverse, model, pk_set, **kwargs):
-    if action == 'post_add':
+    if action == "post_add":
         exercises = Exercise.objects.filter(language=instance).all()
         for user_id in pk_set:
             for exercise in exercises:
-                ExerciseStatus.objects.create(user_id=user_id, exercise_id=exercise.id).save()
+                ExerciseStatus.objects.create(
+                    user_id=user_id, exercise_id=exercise.id
+                ).save()
 
 
 m2m_changed.connect(create_exercise_status, sender=Language.user.through)

@@ -1,0 +1,10 @@
+[flake8]
+extend-ignore = E501, F401, N815, T201
+max-line-length = 119
+exclude =
+    .git,
+    __pycache__,
+    CRM/venv,
+    CRM/static,
+    CRM/media,
+    CRM/templates

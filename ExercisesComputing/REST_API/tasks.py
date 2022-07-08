@@ -1,10 +1,8 @@
-from cgi import test
 from celery import shared_task
-from .computing import CodeComputing
-from rest_framework.response import Response
 from django.http import JsonResponse
 # from prometheus_client import Summary
 from .metrics import Metrics
+from .computing import CodeComputing
 
 
 # REQUEST_TIME = Summary('request_processing_seconds', 'Time spent processing request')

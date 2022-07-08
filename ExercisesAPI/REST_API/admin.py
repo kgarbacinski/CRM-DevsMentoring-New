@@ -1,5 +1,6 @@
 from django.contrib import admin
-from .models import Language, Exercise, ExerciseTest
+
+from .models import Exercise, ExerciseTest, Language
 
 
 @admin.register(Exercise)

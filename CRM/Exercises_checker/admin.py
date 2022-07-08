@@ -1,5 +1,6 @@
 from django.contrib import admin
-from .models import Language, Exercise, ExerciseStatus, Hint
+
+from .models import Exercise, ExerciseStatus, Hint, Language
 
 
 # Register your models here.
@@ -10,7 +11,7 @@ class LanguageAdmin(admin.ModelAdmin):
 
 @admin.register(Exercise)
 class ExerciseAdmin(admin.ModelAdmin):
-    prepopulated_fields = {'slug': ('name',)}
+    prepopulated_fields = {"slug": ("name",)}
 
 
 @admin.register(ExerciseStatus)

@@ -1,6 +1,5 @@
-from rest_framework import serializers
-
 from Exercises_checker.models import ExerciseStatus
+from rest_framework import serializers
 
 
 class PathExerciseSerializer(serializers.ModelSerializer):
@@ -19,4 +18,8 @@ class PathExerciseSerializer(serializers.ModelSerializer):
 class ChangeExerciseCodeSerializer(serializers.ModelSerializer):
     class Meta:
         model = ExerciseStatus
+<<<<<<< HEAD
         fields = ["code", "done"]
+=======
+        fields = ["code"]
+>>>>>>> feat/Add-pre-hooks

@@ -8,12 +8,12 @@ class Migration(migrations.Migration):
 
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ('Files_organizer', '0001_initial'),
+        ("Files_organizer", "0001_initial"),
     ]
 
     operations = [
         migrations.RenameModel(
-            old_name='SubTopic',
-            new_name='Topic',
+            old_name="SubTopic",
+            new_name="Topic",
         ),
     ]
