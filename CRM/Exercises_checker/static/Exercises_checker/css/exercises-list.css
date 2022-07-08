@@ -46,7 +46,7 @@ main hr:not([size]) {
 
 .progress-bar {
   background-color: #dbc110;
-  width: 50%;
+  width: 0%;
 }
 
 .task-tabs {

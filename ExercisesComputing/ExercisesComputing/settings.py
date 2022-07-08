@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'REST_API',
     'rest_framework',
     'corsheaders',
+    'django_prometheus',
 ]
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
@@ -47,6 +48,7 @@ REST_FRAMEWORK = {
 
 }
 MIDDLEWARE = [
+    'django_prometheus.middleware.PrometheusBeforeMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'corsheaders.middleware.CorsMiddleware',
@@ -55,6 +57,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+     'django_prometheus.middleware.PrometheusAfterMiddleware',
 ]
 
 ROOT_URLCONF = 'ExercisesComputing.urls'
@@ -66,6 +69,7 @@ ALLOWED_HOSTS = ['*']
 #     'http://localhost:8000',
 #     'http://0.0.0.0:8000'
 # )
+
 CORS_ALLOW_ALL_ORIGINS = True
 
 TEMPLATES = [

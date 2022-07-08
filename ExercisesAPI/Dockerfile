@@ -9,6 +9,6 @@ ENV PYTHONUNBUFFERED 1
 RUN pip install --upgrade pip
 COPY ./requirements.txt /usr/src/app/requirements.txt
 RUN python3 -m pip install --no-cache-dir -r requirements.txt
-EXPOSE 8002
+EXPOSE 8001
 
 COPY . /usr/src/app/

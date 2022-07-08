@@ -34,7 +34,6 @@ class ExercisesHandler {
         'easy': `<div class="level-color level-color-easy"></div>`,
         'medium': `<div class="level-color level-color-medium"></div>`,
         'hard': `<div class="level-color level-color-hard"></div>`
-
     }
 
     static exercisesListDict = {
@@ -110,14 +109,20 @@ function getExercises(path_id){
             ExercisesHandler.handleAllExercises(response.exercises);
             QuantityHandler.wholeProgressInfo.style.visibility = "visible"
             QuantityHandler.exerciseTable.style.visibility = "visible"
+            updateProgressBarr(response.quantity.done_exercises_quantity, response.quantity.all_exercises_quantity)
         })
 }
 
 document.addEventListener('DOMContentLoaded', function () {
     let languages = document.querySelectorAll('.nav-link:not(.disabled)')
-    if(languages){
+    if(languages.length > 0){
         languages[0].classList.add('active');
         let languageId  = languages[0].id.split('-').pop();
         getExercises(languageId)
     }
 }, false);
+
+function updateProgressBarr(doneTasks, allTasks){
+    let progress = parseInt((doneTasks / allTasks) * 100)
+    document.getElementsByClassName('progress-bar')[0].style.width = `${progress}%`
+}

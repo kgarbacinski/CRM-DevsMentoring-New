@@ -1,14 +1,25 @@
 {% extends 'extends/layout.html' %}
 {% load auth_extras %}
 {% load static %}
-
+{% block style %}
+<!-- <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.1/styles/default.min.css"> -->
+<style type="text/css" media="screen">
+  #editor { 
+      height: 300px;
+      width: 620px;
+  }
+</style>
+{% endblock style %}
 {% block main_content %}
 <h1 id="info"></h1>
     <h1> {{ exercise_status.exercise.name }}</h1>
     <p>{{ exercise_status.exercise.description }}</p>
     <form id="code-form" method="POST" action=''>
         {% csrf_token %}
-        <textarea id="code"  rows="30" cols="50">{{ exercise_status.code }}</textarea>
+        <!-- <textarea id="code"  rows="30" cols="50">{{ exercise_status.code }}</textarea> -->
+        <!-- <pre><code><div id="code"  rows="30" cols="50">{{ exercise_status.code }}</div></code></pre> -->
+        <div id="editor">{{ exercise_status.code }}</div>
+          
     </form>
 
 
@@ -36,10 +47,31 @@
 
 {% block script %}
     <script src="{% static 'Exercises_checker/js/test_exercises.js' %}"></script>
+    <!-- <script src="//unpkg.com/@highlightjs/cdn-assets@11.5.1/highlight.min.js"></script>
+    <script>hljs.highlightAll();</script> -->
+    <script src="{% static 'Exercises_checker/js/ace.js' %}"></script>
 <script>
-
-let language = "{{ exercise_status.exercise.language.name }}"
-let slug_name = "{{ exercise_status.exercise.slug }}"
-let exercise_status_id = "{{ exercise_status.id }}"
+  let language = "{{ exercise_status.exercise.language.name }}"
+  let slug_name = "{{ exercise_status.exercise.slug }}"
+  let exercise_status_id = "{{ exercise_status.id }}"
+  ace.require("ace/ext/beautify");
+  var editor = ace.edit("editor");
+  
+  editor.setTheme("ace/theme/chrome");
+  if(language == 'Python'){
+    editor.session.setMode("ace/mode/python");
+  }else if (language == 'JavaScript') {
+    editor.session.setMode("ace/mode/javascript");
+    // editor.session.setMode("ace/mode/javascript_expression");
+  }else{
+    editor.session.setMode("ace/mode/java");
+  }
+  editor.setFontSize(20);
+  editor.setOptions({
+    enableBasicAutocompletion: true, // the editor completes the statement when you hit Ctrl + Space
+    enableLiveAutocompletion: true, // the editor completes the statement while you are typing
+    showPrintMargin: false, // hides the vertical limiting strip
+    enableSnippets: true,
+});
 </script>
 {% endblock %}

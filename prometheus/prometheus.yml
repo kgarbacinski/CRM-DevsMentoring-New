@@ -2,9 +2,13 @@ global:
   scrape_interval: 15s # when Prometheus is pulling data from exporters etc
   evaluation_interval: 30s # time between each evaluation of Prometheus' alerting rules
 
+# rule_files:
+#   - "first.rules"
+#   - "second.rules"
+
 scrape_configs:
-  - job_name: ExerciseComputing   # your project name
-    metrics_path: /metrics
+  - job_name: ExercisesComputing   # your project name
+    metrics_path: /metrics  # default = /metrics
     static_configs:
       - targets:
         - computing:8002

@@ -1,4 +1,4 @@
-let Selectors = { "code_field" : document.getElementById("code-form").elements['code'],
+let Selectors = { "code_field" : document.getElementById("code-form").elements['editor'],
                     "info_header" : document.getElementById('info')
 
 }
@@ -9,7 +9,12 @@ document.getElementById('send-button').addEventListener('click',  function(){
     
 async function saveCodeToDB(result){
     let data = {}
-    data.code = Selectors['code_field'].value
+    // data.code = Selectors['code_field'].value
+    // data.code = Selectors['code_field'].innerHTML
+    // data.code = document.getElementById('editor').textContent
+    let editor =ace.edit('editor')
+    data.code = editor.getValue()
+    console.log(editor.getValue())
     data.done = result.done
     let url = `${getBaseUrl('/exercises/api/access/exercises/code/')}${exercise_status_id}`
     config = {
@@ -30,7 +35,7 @@ async function saveCodeToDB(result){
         if (result.done){
             modalBody.textContent = "Congratulations! You've passed all the test"
             myModal.addEventListener('hide.bs.modal', function (event) {
-                // window.location.href = `${getBaseUrl('/exercises/')}`;
+                window.location.href = `${getBaseUrl('/exercises/')}`;
               })
         }else{
             modalBody.textContent = `You passed: ${result.test_passed} tests - Try again.`
@@ -51,7 +56,10 @@ let data = {}
     // let computing_url =  "http://computing:8002/"
     let computing_url = "http://localhost:8002/"
     let token = await getToken()
-    data.code = Selectors['code_field'].value
+    // data.code = Selectors['code_field'].value
+    let editor =ace.edit('editor')
+    data.code = editor.getValue()
+    // console.log(editor.getValue())
     data.language = language
     data.name = slug_name
     config = {
@@ -85,6 +93,7 @@ function getStatus(taskID){
                 console.log('dupa');
                 return false
             }else if(taskStatus === 'SUCCESS'){
+                console.log('DUPA', data.task_result);
                 saveCodeToDB(data.task_result)
                 return true
             }

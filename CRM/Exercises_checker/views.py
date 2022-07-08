@@ -10,7 +10,7 @@ from rest_framework.permissions import IsAuthenticated
 
 
 class TasksListView(LoginRequiredMixin, ListView):
-    template_name = 'Exercises_checker/exercises-list.html'
+    template_name = "Exercises_checker/exercises-list.html"
     model = Language
     context_object_name = "languages"
 
@@ -21,8 +21,11 @@ class TaskDetailView(LoginRequiredMixin, DetailView):
     template_name = "Exercises_checker/exercise.html"
 
     def get_object(self, queryset=None):
-        exercise_status = ExerciseStatus.objects.filter(user=self.request.user).filter(exercise__id=self.kwargs['pk']).first()
+        exercise_status = (
+            ExerciseStatus.objects.filter(user=self.request.user)
+            .filter(exercise__id=self.kwargs["pk"])
+            .first()
+        )
         if not exercise_status:
             raise Http404
         return exercise_status
-

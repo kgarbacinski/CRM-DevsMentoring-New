@@ -2,8 +2,8 @@ version: '3.9'
 
 services:
   crm:
-    hostname: crm
     build: ./CRM
+    hostname: crm
     command: python3 manage.py runserver crm:8000
     restart: always
     volumes:
@@ -34,7 +34,7 @@ services:
   computing:
     build: ./ExercisesComputing
     hostname: computing
-    command: sh -c "python3 manage.py makemigrations && python3 manage.py migrate && python3 manage.py runserver computing:8002"
+    command: python3 manage.py runserver computing:8002
     restart: always
     volumes:
       - ./ExercisesComputing:/usr/src/app
@@ -71,7 +71,9 @@ services:
       - CELERY_BROKER=redis://redis:6379/0
       - CELERY_BACKEND=redis://redis:6379/0
       - SECRET_KEY=${SECRET_KEY}
-  
+    depends_on:
+      - computing
+      - rabbit
     networks:
       - crmnetwork
   
@@ -82,6 +84,8 @@ services:
       - ./prometheus/:/etc/prometheus/
     ports:
       - "9090:9090"
+    depends_on:
+      - computing
     networks:
       - crmnetwork
 

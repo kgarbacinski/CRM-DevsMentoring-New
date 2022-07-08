@@ -41,12 +41,6 @@ class Handler(ABC):
         # if result == test_output:
         #     self.passed_test += 1
 
-    def handle_error(self, e):
-        error = e.output.strip().decode('utf-8').split('\n')
-        # error = "".join(error[1:])
-        print("ERROR - DUPA: ", error)
-        return {"error": error}
-
     def execute_computing(self):
         for test in self.tests:
             file = self.create_file(test.get('input'))
@@ -59,6 +53,10 @@ class Handler(ABC):
         return {"done": False, "test_passed": f"{self.passed_test}/{len(self.tests)}", "error": test}
 
     @abstractmethod
+    def handle_error(self, e):
+        raise NotImplementedError
+
+    @abstractmethod
     def exec_code(self):
         raise NotImplementedError
 
@@ -68,13 +66,17 @@ class PythonHandler(Handler):
         super().__init__(data, tests, extension=".py", terminal_command="python3")
 
     def exec_code(self, test_input):
+        print('TEST NAME - ', self.data.get('name'))
+        print('TEST CoDE - ', self.data.get('code'))
+        print('TEST INPUT: ', test_input)
         return f"{self.data.get('code')}\nprint({self.data.get('name')}({test_input}))"
 
-    # def handle_error(self, e):
-    #     error_list = e.output.strip().decode('utf-8').split('\n')
-    #     error_line = error_list[0].split(',')[1]
-    #     error_message = error_list[-1]
-    #     return {"error_message": error_message, "error_line": error_line}
+    def handle_error(self, e):
+        error_list = e.output.strip().decode('utf-8').split('\n')
+        # error_line = error_list[0].split(',')[1]
+        error_message = error_list[3]
+        # return {"error_message": error_message, "error_line": error_line}
+        return {"error_message": error_message}
 
 class JavaHandler(Handler):
     def __init__(self, data, tests):
@@ -83,6 +85,13 @@ class JavaHandler(Handler):
     def exec_code(self, test_input):
         return f"class Main{{{self.data.get('code')} public static void main(String[] args) {{System.out.println({self.data.get('name')}({test_input}));}}}}"
 
+    def handle_error(self, e):
+        error_list = e.output.strip().decode('utf-8').split('\n')
+        # error_line = error_list[0].split(',')[1]
+        error_message = error_list
+        # return {"error_message": error_message, "error_line": error_line}
+        return {"error_message": error_message}
+        
 
 class JavaScriptHandler(Handler):
     def __init__(self, data, tests):
@@ -110,6 +119,9 @@ class CodeComputing:
         tests = requests.get(settings.API_URL,
                              params={"name": self.data.get('name'), "language": self.data.get("language")},
                              headers={"Authorization": self.header_token}).json()
+        print('TEST 1 - ', tests)
+        print('Get test - name: ', self.data.get('name'))
+        print('Get test - language: ', self.data.get("language"))
         return tests
 
     def execute_computing(self):
