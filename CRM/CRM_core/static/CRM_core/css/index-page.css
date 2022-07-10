@@ -278,7 +278,7 @@ main .button-pay {
 
 @media (min-width: 576px) {
   main .mentor-page-block .your-students p,
-  main .mentor-page-block .students-capacity p {
+main .mentor-page-block .students-capacity p {
     margin-top: 15px;
     height: 40px;
     font-size: 0.9rem;

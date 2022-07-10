@@ -22,14 +22,14 @@ from django.views.generic.base import RedirectView
 favicon_view = RedirectView.as_view(url="static/favicon.ico", permanent=True)
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('', include('CRM_core.urls')),
-    path('calendar/', include('Meetings_calendar.urls')),
-    path('exercises/', include('Exercises_checker.urls')),
-    path('files/', include('Files_organizer.urls')),
-    path('system/', include('System_administration.urls')),
-    path('payment/', include('Payments_system.urls')),
-    re_path(r'^favicon\.ico$', favicon_view),
+    path("admin/", admin.site.urls),
+    path("", include("CRM_core.urls")),
+    path("calendar/", include("Meetings_calendar.urls")),
+    path("exercises/", include("Exercises_checker.urls")),
+    path("files/", include("Files_organizer.urls")),
+    path("system/", include("System_administration.urls")),
+    path("payment/", include("Payments_system.urls")),
+    re_path(r"^favicon\.ico$", favicon_view),
 ]
 
 if settings.DEBUG:

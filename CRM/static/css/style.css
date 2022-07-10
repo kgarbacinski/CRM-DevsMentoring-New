@@ -242,6 +242,7 @@ main {
   background-color: #f7f7f7;
   min-height: 92vh;
   padding: 1rem;
+  position: relative;
 }
 
 @media (max-width: 992px) {
