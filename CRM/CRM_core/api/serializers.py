@@ -9,7 +9,6 @@ class NoteSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 
-
 class MeetingSerializer(serializers.ModelSerializer):
     class Meta:
         model = Meeting
