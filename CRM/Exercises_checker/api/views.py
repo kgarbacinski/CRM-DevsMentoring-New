@@ -15,7 +15,6 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
 
-<<<<<<< HEAD
 from Exercises_checker.api.permissions import ExerciseCodePermission
 from Exercises_checker.api.serializers import (
     PathExerciseSerializer,
@@ -23,8 +22,6 @@ from Exercises_checker.api.serializers import (
 )
 from Exercises_checker.models import Language, Exercise, ExerciseStatus
 
-=======
->>>>>>> feat/Add-pre-hooks
 
 class ExerciseView(generics.ListAPIView):
     permission_classes = [IsAuthenticated]
@@ -142,7 +139,6 @@ class ExerciseCodeView(APIView):
         exercise_status = ExerciseStatus.objects.filter(id=pk).first()
         if not exercise_status:
             raise Http404
-<<<<<<< HEAD
         data = {"code": request.data.get("code"), "done": request.data.get("done")}
         # done = {"done": request.data.get('done')}
         serializer = self.serializer_class(exercise_status, data=data, partial=True)
@@ -150,6 +146,3 @@ class ExerciseCodeView(APIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-=======
-        return self.handle_response(exercise_status)
->>>>>>> feat/Add-pre-hooks

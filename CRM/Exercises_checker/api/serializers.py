@@ -18,8 +18,4 @@ class PathExerciseSerializer(serializers.ModelSerializer):
 class ChangeExerciseCodeSerializer(serializers.ModelSerializer):
     class Meta:
         model = ExerciseStatus
-<<<<<<< HEAD
         fields = ["code", "done"]
-=======
-        fields = ["code"]
->>>>>>> feat/Add-pre-hooks

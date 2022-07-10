@@ -8,17 +8,12 @@ def has_group(user, group_name):
     return user.groups.filter(name=group_name).exists()
 
 
-<<<<<<< HEAD
 @register.filter(name='has_access')
 def has_access(user, topic):
     if user in topic.user.all():
         return True
     return False
 
-=======
-@register.filter(name="has_access")
-def has_access(user, subtopic):
->>>>>>> feat/Add-pre-hooks
 
 @register.filter(name='has_access_language')
 def has_access_language(user, language):

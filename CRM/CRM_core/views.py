@@ -36,12 +36,7 @@ class LoginView(PasswordResetView):
             user = LoginForm(request.POST)
             if user.is_valid():
                 return self.authenticate_user(user)
-<<<<<<< HEAD
         elif 'send_reset' in request.POST:
-=======
-
-        elif "send_reset" in request.POST:
->>>>>>> feat/Add-pre-hooks
             reset_form = ResetRequestForm(request.POST)
 
             if reset_form.is_valid():
