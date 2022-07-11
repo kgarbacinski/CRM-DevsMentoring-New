@@ -38,7 +38,8 @@ class Handler(ABC):
                 .strip()
                 .decode("utf-8")
             )
-
+            if result == test_output:
+                self.passed_test += 1
         except subprocess.CalledProcessError as e:
             return self.handle_error(e)
         finally:

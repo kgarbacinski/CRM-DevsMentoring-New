@@ -1,5 +1,3 @@
-from collections import OrderedDict
-
 from django.contrib.auth.models import AnonymousUser
 from django.test import TestCase
 from REST_API.models import Exercise, ExerciseTest, Language
