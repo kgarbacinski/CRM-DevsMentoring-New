@@ -222,7 +222,9 @@ class UserSearchBoxSubtopicView(generics.ListAPIView):
         if re.match(Patterns.whole_name_pattern, text):
             space = text.find(" ")
             first_text = text[:space]
-            second_text = text[space + 1 :]
+            # fmt: off
+            second_text = text[space + 1:]
+            # fmt: on
             queryset = (
                 filter(text=first_text, topic=topic, filter_by="first_name")
                 or filter(text=second_text, topic=topic, filter_by="first_name")
