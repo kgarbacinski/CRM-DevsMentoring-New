@@ -24,7 +24,7 @@ class Handler(ABC):
 
     def create_file(self, test_input):
         unique_name = secrets.token_hex(nbytes=16)
-        path = (f'{os.getcwd()}/files/{unique_name}{self.extension}')
+        path = f"{os.getcwd()}/files/{unique_name}{self.extension}"
         with open(path, "w") as file:
             file.write(self.exec_code(test_input))
         return file
@@ -49,14 +49,18 @@ class Handler(ABC):
 
     def execute_computing(self):
         for test in self.tests:
-            file = self.create_file(test.get('input'))
-            test = self.check_results(file, test.get('output'))
+            file = self.create_file(test.get("input"))
+            test = self.check_results(file, test.get("output"))
         return self.get_response(test)
 
     def get_response(self, test):
         if self.passed_test == len(self.tests):
-            return {'done': True, 'status': status.HTTP_200_OK}
-        return {"done": False, "test_passed": f"{self.passed_test}/{len(self.tests)}", "error": test}
+            return {"done": True, "status": status.HTTP_200_OK}
+        return {
+            "done": False,
+            "test_passed": f"{self.passed_test}/{len(self.tests)}",
+            "error": test,
+        }
 
     @abstractmethod
     def handle_error(self, e):
@@ -72,17 +76,18 @@ class PythonHandler(Handler):
         super().__init__(data, tests, extension=".py", terminal_command="python3")
 
     def exec_code(self, test_input):
-        print('TEST NAME - ', self.data.get('name'))
-        print('TEST CoDE - ', self.data.get('code'))
-        print('TEST INPUT: ', test_input)
+        print("TEST NAME - ", self.data.get("name"))
+        print("TEST CoDE - ", self.data.get("code"))
+        print("TEST INPUT: ", test_input)
         return f"{self.data.get('code')}\nprint({self.data.get('name')}({test_input}))"
 
     def handle_error(self, e):
-        error_list = e.output.strip().decode('utf-8').split('\n')
+        error_list = e.output.strip().decode("utf-8").split("\n")
         # error_line = error_list[0].split(',')[1]
         error_message = error_list[3]
         # return {"error_message": error_message, "error_line": error_line}
         return {"error_message": error_message}
+
 
 class JavaHandler(Handler):
     def __init__(self, data, tests):
@@ -92,12 +97,12 @@ class JavaHandler(Handler):
         return f"class Main{{{self.data.get('code')} public static void main(String[] args) {{System.out.println({self.data.get('name')}({test_input}));}}}}"
 
     def handle_error(self, e):
-        error_list = e.output.strip().decode('utf-8').split('\n')
+        error_list = e.output.strip().decode("utf-8").split("\n")
         # error_line = error_list[0].split(',')[1]
         error_message = error_list
         # return {"error_message": error_message, "error_line": error_line}
         return {"error_message": error_message}
-        
+
 
 class JavaScriptHandler(Handler):
     def __init__(self, data, tests):
@@ -107,7 +112,7 @@ class JavaScriptHandler(Handler):
         return f"{self.data.get('code')} console.log({self.data.get('name')}({test_input}))"
 
     def handle_error(self, e):
-        error = e.output.strip().decode('utf-8').split('\n')
+        error = e.output.strip().decode("utf-8").split("\n")
         # error = "".join(error[6:])
         return {"error": error[4]}
 
@@ -128,12 +133,17 @@ class CodeComputing:
         )
 
     def get_tests(self):
-        tests = requests.get(settings.API_URL,
-                             params={"name": self.data.get('name'), "language": self.data.get("language")},
-                             headers={"Authorization": self.header_token}).json()
-        print('TEST 1 - ', tests)
-        print('Get test - name: ', self.data.get('name'))
-        print('Get test - language: ', self.data.get("language"))
+        tests = requests.get(
+            settings.API_URL,
+            params={
+                "name": self.data.get("name"),
+                "language": self.data.get("language"),
+            },
+            headers={"Authorization": self.header_token},
+        ).json()
+        print("TEST 1 - ", tests)
+        print("Get test - name: ", self.data.get("name"))
+        print("Get test - language: ", self.data.get("language"))
         return tests
 
     def execute_computing(self):

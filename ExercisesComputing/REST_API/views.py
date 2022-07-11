@@ -12,10 +12,11 @@ from .tasks import test_task
 class ExerciseView(APIView):
     permission_classes = [TokenVerify]
 
-    def post(self, *args, **kwargs):   
-        task = test_task.apply_async(args=(self.request.META.get('HTTP_AUTHORIZATION', None), self.request.data))
+    def post(self, *args, **kwargs):
+        task = test_task.apply_async(
+            args=(self.request.META.get("HTTP_AUTHORIZATION", None), self.request.data)
+        )
         return JsonResponse({"task_id": task.id})
-    
 
 
 def get_status(request, task_id):
