@@ -11,21 +11,31 @@ from Payments_system.models import PaymentInfo
 
 
 class PaymentView(LoginRequiredMixin, View):
-    template_name = 'Payments_system/payment.html'
+    template_name = "Payments_system/payment.html"
 
     def get(self, request, *args, **kwargs):
-        if self.request.user.groups.filter(name='Mentor').exists():
-            return render(request, self.template_name, {'form': PaymentForm()})
+        if self.request.user.groups.filter(name="Mentor").exists():
+            return render(request, self.template_name, {"form": PaymentForm()})
         try:
-            payment_data = PaymentInfo.objects.get(student=Student.objects.get(user=request.user.id))
+            payment_data = PaymentInfo.objects.get(
+                student=Student.objects.get(user=request.user.id)
+            )
             form = PaymentForm(instance=payment_data)
-            return render(request, self.template_name, {'form': form})
+            return render(request, self.template_name, {"form": form})
         except PaymentInfo.DoesNotExist:
-            return render(request, self.template_name,
-                          {'form': PaymentForm(initial=
-                                               {'firstName': request.user.first_name,
-                                                'lastName': request.user.last_name,
-                                                'email': request.user.email})})
+            return render(
+                request,
+                self.template_name,
+                {
+                    "form": PaymentForm(
+                        initial={
+                            "firstName": request.user.first_name,
+                            "lastName": request.user.last_name,
+                            "email": request.user.email,
+                        }
+                    )
+                },
+            )
 
     # def post(self, request, *args, **kwargs):
     #     form = PaymentForm(request.POST)

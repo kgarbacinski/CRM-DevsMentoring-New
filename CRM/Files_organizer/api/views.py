@@ -38,9 +38,9 @@ class DocumentView(generics.ListAPIView):
             raise Http404
         users = topic.user.all()
         if (
-                self.request.user in users
-                or self.request.user.is_superuser
-                or self.request.user.groups.filter(name="Mentor").exists()
+            self.request.user in users
+            or self.request.user.is_superuser
+            or self.request.user.groups.filter(name="Mentor").exists()
         ):
             documents = Document.objects.filter(topic_id=subtopic_id).all()
             if not documents:
@@ -67,7 +67,7 @@ class HasAccessToFileView(
         return context
 
     def __get_subtopic_and_user(
-            self, subtopic_id, user_id
+        self, subtopic_id, user_id
     ) -> Union[Response, Tuple[Topic, User]]:
         if not subtopic_id or not user_id:
             return Response(status=status.HTTP_400_BAD_REQUEST)
@@ -101,7 +101,7 @@ class HasAccessToSubjectView(
     queryset = User.objects.filter(groups__name="Student").all()
 
     def __get_subject_and_user(
-            self, subject_id, user_id
+        self, subject_id, user_id
     ) -> Union[Response, Tuple[Subject, User]]:
         if not subject_id or not user_id:
             return Response(status=status.HTTP_400_BAD_REQUEST)
@@ -158,7 +158,7 @@ class UserSearchBoxSubtopicView(generics.ListAPIView):
                 return cls.NO_ACCESS
 
     def __get_user_by_name_or_surname_access(
-            self, text, topic, filter_by
+        self, text, topic, filter_by
     ) -> QuerySet[User]:
         if filter_by == "first_name":
             return (
@@ -181,12 +181,12 @@ class UserSearchBoxSubtopicView(generics.ListAPIView):
         if re.match(Patterns.whole_name_pattern, text):
             space = text.find(" ")
             first_text = text[:space]
-            second_text = text[space + 1:]
+            second_text = text[space + 1 :]
             queryset = (
-                    filter(text=first_text, topic=topic, filter_by="first_name")
-                    or filter(text=second_text, topic=topic, filter_by="first_name")
-                    or filter(text=first_text, topic=topic, filter_by="last_name")
-                    or filter(text=second_text, topic=topic, filter_by="last_name")
+                filter(text=first_text, topic=topic, filter_by="first_name")
+                or filter(text=second_text, topic=topic, filter_by="first_name")
+                or filter(text=first_text, topic=topic, filter_by="last_name")
+                or filter(text=second_text, topic=topic, filter_by="last_name")
             )
 
         else:
@@ -197,7 +197,7 @@ class UserSearchBoxSubtopicView(generics.ListAPIView):
         return queryset
 
     def __get__user_by_name_or_surname_no_access(
-            self, text, topic, filter_by
+        self, text, topic, filter_by
     ) -> QuerySet[User]:
         if filter_by == "first_name":
             return (
@@ -220,12 +220,12 @@ class UserSearchBoxSubtopicView(generics.ListAPIView):
         if re.match(Patterns.whole_name_pattern, text):
             space = text.find(" ")
             first_text = text[:space]
-            second_text = text[space + 1:]
+            second_text = text[space + 1 :]
             queryset = (
-                    filter(text=first_text, topic=topic, filter_by="first_name")
-                    or filter(text=second_text, topic=topic, filter_by="first_name")
-                    or filter(text=first_text, topic=topic, filter_by="last_name")
-                    or filter(text=second_text, topic=topic, filter_by="last_name")
+                filter(text=first_text, topic=topic, filter_by="first_name")
+                or filter(text=second_text, topic=topic, filter_by="first_name")
+                or filter(text=first_text, topic=topic, filter_by="last_name")
+                or filter(text=second_text, topic=topic, filter_by="last_name")
             )
 
         else:
@@ -308,12 +308,12 @@ class UserSearchBoxSubjectView(generics.ListAPIView):
         if re.match(Patterns.whole_name_pattern, text):
             space = text.find(" ")
             first_text = text[:space]
-            second_text = text[space + 1:]
+            second_text = text[space + 1 :]
             queryset = (
-                    filter(text=first_text, filter_by="first_name")
-                    or filter(text=second_text, filter_by="first_name")
-                    or filter(text=first_text, filter_by="last_name")
-                    or filter(text=second_text, filter_by="last_name")
+                filter(text=first_text, filter_by="first_name")
+                or filter(text=second_text, filter_by="first_name")
+                or filter(text=first_text, filter_by="last_name")
+                or filter(text=second_text, filter_by="last_name")
             )
 
         else:
