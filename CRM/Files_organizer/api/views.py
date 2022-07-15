@@ -179,11 +179,14 @@ class UserSearchBoxSubtopicView(generics.ListAPIView):
     def with_access(self, text, topic) -> QuerySet[User]:
         filter = self.__get_user_by_name_or_surname_access
         if re.match(Patterns.whole_name_pattern, text):
-            space = text.find(" ")
-            first_text = text[:space]
+            names_list = text.split(" ")
+            # space = text.find(" ")
+            # first_text = text[:space]
+            first_text = names_list[0]
             # fmt: off
-            second_text = text[space + 1:]
+            # second_text = text[space + 1:]
             # fmt: on
+            second_text = names_list[1]
             queryset = (
                 filter(text=first_text, topic=topic, filter_by="first_name")
                 or filter(text=second_text, topic=topic, filter_by="first_name")
