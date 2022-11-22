@@ -1,12 +1,12 @@
-let Selectors = { "code_field" : document.getElementById("code-form").elements['editor'],
-                    "info_header" : document.getElementById('info')
+// let Selectors = { "code_field" : document.getElementById("code-form").elements['editor'],
+//                     // "info_header" : document.getElementById('info')
 
-}
+// }
 
 document.getElementById('send-button').addEventListener('click',  function(){
      sendToComputing();
 })
-    
+
 async function saveCodeToDB(result){
     let data = {}
     // data.code = Selectors['code_field'].value
@@ -27,24 +27,33 @@ async function saveCodeToDB(result){
             body: JSON.stringify(data)
         }
     response = await fetch(url, config)
-    if (response.ok){        
-        let myModal = document.getElementById('myModal');
-        var modal = bootstrap.Modal.getOrCreateInstance(myModal);
-        let modalBody = document.querySelector('#myModal .modal-body');
-        
+    if (response.ok){
+        // let myModal = document.getElementById('myModal');
+        // var modal = bootstrap.Modal.getOrCreateInstance(myModal);
+        // let modalBody = document.querySelector('#myModal .modal-body');
+        let abc = document.getElementById('output-result')
+
         if (result.done){
-            modalBody.textContent = "Congratulations! You've passed all the test"
-            myModal.addEventListener('hide.bs.modal', function (event) {
-                window.location.href = `${getBaseUrl('/exercises/')}`;
-              })
+            abc.textContent = "Congratulations! You've passed all the test"
+            // modalBody.textContent = "Congratulations! You've passed all the test"
+            // myModal.addEventListener('hide.bs.modal', function (event) {
+            //     window.location.href = `${getBaseUrl('/exercises/')}`;
+            //   })
         }else{
-            modalBody.textContent = `You passed: ${result.test_passed} tests - Try again.`
+            abc.textContent = `You passed: ${result.test_passed} tests - Try again.`
+            let error = result.error
+            const textNode = document.createTextNode(error.error_message);
+            abc.appendChild(textNode)
+            // abc.insertAdjacentText("beforeend", '<p>' + error.error_message);
+
+
+            // modalBody.textContent = `You passed: ${result.test_passed} tests - Try again.`
         }
-        modal.show(myModal)
+        // modal.show(myModal)
     }
 
 }
- 
+
 async function getToken(){
     let token_url = `${window.location.origin}/exercises/api/token/`
     let token_response = await (await fetch(token_url)).json();
@@ -72,11 +81,11 @@ let data = {}
         },
         body: JSON.stringify(data)
     }
-    
+
     let computing_response = await fetch(computing_url, config)
     let body = await computing_response.json()
     if (computing_response.ok){
-        getStatus(body.task_id)  
+        getStatus(body.task_id)
     }
 }
 
@@ -102,7 +111,7 @@ function getStatus(taskID){
             }, 100)
         })
 }
-    
+
 
 
 

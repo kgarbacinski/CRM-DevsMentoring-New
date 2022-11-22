@@ -2,51 +2,115 @@
 {% load auth_extras %}
 {% load static %}
 {% block style %}
+
+<link rel="stylesheet" href={% static  "Exercises_checker/css/answer.css" %}>
 <!-- <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.1/styles/default.min.css"> -->
 <style type="text/css" media="screen">
-  #editor { 
+  #editor {
       height: 300px;
       width: 620px;
   }
 </style>
 {% endblock style %}
 {% block main_content %}
-<h1 id="info"></h1>
-    <h1> {{ exercise_status.exercise.name }}</h1>
-    <p>{{ exercise_status.exercise.description }}</p>
-    <form id="code-form" method="POST" action=''>
-        {% csrf_token %}
-        <!-- <textarea id="code"  rows="30" cols="50">{{ exercise_status.code }}</textarea> -->
-        <!-- <pre><code><div id="code"  rows="30" cols="50">{{ exercise_status.code }}</div></code></pre> -->
-        <div id="editor">{{ exercise_status.code }}</div>
-          
-    </form>
+<section class="main-cont">
+<section class="description">
+  <div class="quest-infos">
+      <div class="dif">
+          <p>Difficulty:</p>
+          <div class="difficulty"></div>
+      </div>
+      <p class="cattegory">Cattegory : Examples</p>
+      <p class="attempts">Attempts: 150 000+</p>
+  </div>
+  <h2 class="quest-name"><span class="strong-undo">Quest The Best</span></h2>
+  <div class="desc">
+      <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Expedita accusantium sit corrupti
+          quia
+          magni minus? Odit, doloremque voluptatem! Dolorem nesciunt minima, vero ullam eos doloribus
+          eaque neque fugit vitae incidunt.</p>
+      <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Sequi dolore eaque itaque hic
+          consequuntur dolor adipisci quidem rerum facere quam.</p>
+      <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Eius libero, magni harum repellat
+          molestias <span class="inside-p-box">[1,2,3,4]</span> ipsa maiores magnam, a expedita,
+          deserunt nihil rerum.
+          Porro rem deleniti molestias.</p>
 
-
-    <button class="nav-link" id="send-button" >SEND</button>
-
-    <div class="modal fade" id="myModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title" id="exampleModalLabel">{{ exercise_status.exercise.name }}</h5>
-              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-              ...
-            </div>
-            <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-            </div>
-          </div>
-        </div>
+      <div class="hint">
+          <h2><span class="strong-undo">Hint 1</span></h2>
+          <p class="hint-desc">Lorem ipsum dolor, sit amet consectetur adipisicing elit. Ullam
+              blanditiis
+              ad sapiente explicabo voluptatem? Ratione!</p>
       </div>
 
+      <div class="hint">
+          <h2><span class="strong-undo">Hint 2</span></h2>
+          <p class="hint-desc">Lorem ipsum dolor, sit amet consectetur adipisicing elit. Ullam
+              blanditiis
+              ad sapiente explicabo voluptatem? Ratione!</p>
+      </div>
+
+      <div class="hint">
+          <h2><span class="strong-undo">Hint 3</span></h2>
+          <p class="hint-desc">Lorem ipsum dolor, sit amet consectetur adipisicing elit. Ullam
+              blanditiis
+              ad sapiente explicabo voluptatem? Ratione!</p>
+      </div>
+  </div>
+</section>
+<section class="solution">
+  <div class="full-code-field">
+      <div class="solution-top">
+          <h3 class="title-sol"><span class="strong-undo">Your</span> solution</h3>
+          <button id="send-button" class="run">Run</button>
+
+      </div>
+      <div id="editor">{{ exercise_status.code }}</div>
+      <!-- <div spellcheck="false" autocorrect="off" autocapitalize="off" translate="no"
+          contenteditable="true" class="code-content" style="tab-size: 4;" role="textbox"
+          aria-multiline="true" aria-autocomplete="list">
+          <div class="code-line"><span class="c-func">function</span> <span
+                  class="c-param">testFunc</span>(<span class="c-param">array</span><span
+                  class="c-inter">,</span>
+              <span class="c-param">sequence</span>) {</div>
+          <div class="code-line only-comment"> <span class="c-comm">// Write your code here.</span>
+          </div>
+          <div class="code-line">}</div>
+
+          <div class="code-line readonly" readonly="true"><span class="c-inter">exports</span><span
+                  class="c-inter">.</span><span class="c-param">isValidSubsequence</span> <span
+                  class="c-inter">=</span> <span class="c-inter">isValidSubsequence</span><span
+                  class="c-inter">;</span></div>
+      </div> -->
+
+  </div>
+</section>
+<section class="tests">
+  <div class="case-test">
+      <p class="test-number">Test 1 : </p>
+      <div class="test-box">[1, 2, 3, 4]</div>
+  </div>
+  <div class="case-test">
+      <p class="test-number">Test 2 : </p>
+      <div class="test-box">[1, 2, 3, 4]</div>
+  </div>
+  <div class="case-test">
+      <p class="test-number">Test 3 : </p>
+      <div class="test-box">[1, 2, 3, 4]</div>
+  </div>
+</section>
+<section class="output">
+  <h2 class="output-title">Submit your solution and see the output here</h2>
+  <p id="output-result" class="output-result"></p>
+  <button class="submit" type="submit">Submit</button>
+</section>
+</section>
 {% endblock %}
 
 
 {% block script %}
     <script src="{% static 'Exercises_checker/js/test_exercises.js' %}"></script>
+    <script src="{% static 'Exercises_checker/js/answer.js'%}" defer></script>
     <!-- <script src="//unpkg.com/@highlightjs/cdn-assets@11.5.1/highlight.min.js"></script>
     <script>hljs.highlightAll();</script> -->
     <script src="{% static 'Exercises_checker/js/ace.js' %}"></script>
@@ -56,7 +120,7 @@
   let exercise_status_id = "{{ exercise_status.id }}"
   ace.require("ace/ext/beautify");
   var editor = ace.edit("editor");
-  
+
   editor.setTheme("ace/theme/chrome");
   if(language == 'Python'){
     editor.session.setMode("ace/mode/python");
