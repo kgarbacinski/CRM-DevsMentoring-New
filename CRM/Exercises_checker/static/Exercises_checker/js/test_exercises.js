@@ -1,21 +1,18 @@
-let Selectors = { "code_field" : document.getElementById("code-form").elements['editor'],
-                    "info_header" : document.getElementById('info')
+// let Selectors = { "code_field" : document.getElementById("code-form").elements['editor'],
+//                     // "info_header" : document.getElementById('info')
 
-}
+// }
 
-document.getElementById('send-button').addEventListener('click',  function(){
-     sendToComputing();
-})
-    
+// document.getElementById('send-button').addEventListener('click',  function(){
+//      sendToComputing();
+// })
+
 async function saveCodeToDB(result){
     let data = {}
-    // data.code = Selectors['code_field'].value
-    // data.code = Selectors['code_field'].innerHTML
-    // data.code = document.getElementById('editor').textContent
-    let editor =ace.edit('editor')
+
+    let editor = ace.edit('editor')
     data.code = editor.getValue()
-    console.log(editor.getValue())
-    data.done = result.done
+    data.done = result.is_all_tests_passed
     let url = `${getBaseUrl('/exercises/api/access/exercises/code/')}${exercise_status_id}`
     config = {
             method: 'PATCH',
@@ -27,24 +24,15 @@ async function saveCodeToDB(result){
             body: JSON.stringify(data)
         }
     response = await fetch(url, config)
-    if (response.ok){        
-        let myModal = document.getElementById('myModal');
-        var modal = bootstrap.Modal.getOrCreateInstance(myModal);
-        let modalBody = document.querySelector('#myModal .modal-body');
-        
+    if (response.ok){
         if (result.done){
-            modalBody.textContent = "Congratulations! You've passed all the test"
-            myModal.addEventListener('hide.bs.modal', function (event) {
-                window.location.href = `${getBaseUrl('/exercises/')}`;
-              })
+            console.log("Congratulations! You've passed all the test")
         }else{
-            modalBody.textContent = `You passed: ${result.test_passed} tests - Try again.`
+            let error = result.error
         }
-        modal.show(myModal)
     }
-
 }
- 
+
 async function getToken(){
     let token_url = `${window.location.origin}/exercises/api/token/`
     let token_response = await (await fetch(token_url)).json();
@@ -52,7 +40,8 @@ async function getToken(){
 }
 
 async function sendToComputing() {
-let data = {}
+    let data = {}
+    // TODO check computing host
     // let computing_url =  "http://computing:8002/"
     let computing_url = "http://localhost:8002/"
     let token = await getToken()
@@ -72,11 +61,12 @@ let data = {}
         },
         body: JSON.stringify(data)
     }
-    
+
     let computing_response = await fetch(computing_url, config)
     let body = await computing_response.json()
     if (computing_response.ok){
-        getStatus(body.task_id)  
+        // console.log("response ok ", body.task_id)
+        getStatus(body.task_id)
     }
 }
 
@@ -86,26 +76,21 @@ function getStatus(taskID){
     fetch(url)
     .then(res => res.json())
         .then(data => {
+            // console.log(taskID," ", data)
             const taskStatus = data.task_status;
             const taskResult = data.task_result;
-            console.log(data.task_result);
             if (taskStatus === 'FAILURE') {
-                console.log('dupa');
+                console.log('FAILURE');
                 return false
             }else if(taskStatus === 'SUCCESS'){
                 console.log('DUPA', data.task_result);
-                saveCodeToDB(data.task_result)
+                if (data.task_result.error_message)
+                    return false
+                saveCodeToDB(data.task_result);
                 return true
             }
             setTimeout(function (){
                 getStatus(taskID);
-            }, 100)
+            }, 10)
         })
 }
-    
-
-
-
-
-
-

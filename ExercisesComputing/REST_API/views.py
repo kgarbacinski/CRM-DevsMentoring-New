@@ -7,14 +7,14 @@ from rest_framework.views import APIView
 from .computing import CodeComputing
 from .permissions import TokenVerify
 from .tasks import test_task
-
+from ExercisesComputing.celery import app
 
 class ExerciseView(APIView):
     permission_classes = [TokenVerify]
 
-    def post(self, *args, **kwargs):
+    def post(self, request):
         task = test_task.apply_async(
-            args=(self.request.META.get("HTTP_AUTHORIZATION", None), self.request.data)
+            args=(request.META.get("HTTP_AUTHORIZATION", None), request.data)
         )
         return JsonResponse({"task_id": task.id})
 

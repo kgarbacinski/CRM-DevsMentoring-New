@@ -2,51 +2,248 @@
 {% load auth_extras %}
 {% load static %}
 {% block style %}
+
+<link rel="stylesheet" href={% static  "Exercises_checker/css/layout.css" %}>
 <!-- <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.1/styles/default.min.css"> -->
 <style type="text/css" media="screen">
-  #editor { 
-      height: 300px;
-      width: 620px;
+  #editor {
+      height: inherit;
+      width: inherit;
   }
 </style>
 {% endblock style %}
 {% block main_content %}
-<h1 id="info"></h1>
-    <h1> {{ exercise_status.exercise.name }}</h1>
-    <p>{{ exercise_status.exercise.description }}</p>
-    <form id="code-form" method="POST" action=''>
-        {% csrf_token %}
-        <!-- <textarea id="code"  rows="30" cols="50">{{ exercise_status.code }}</textarea> -->
-        <!-- <pre><code><div id="code"  rows="30" cols="50">{{ exercise_status.code }}</div></code></pre> -->
-        <div id="editor">{{ exercise_status.code }}</div>
-          
-    </form>
+<div class="wrapper2">
+
+  <!-- <div class="right-side"> -->
+  <section class="content">
 
 
-    <button class="nav-link" id="send-button" >SEND</button>
+      <!--
+                  DESCRIPTION SECTION
+              -->
 
-    <div class="modal fade" id="myModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title" id="exampleModalLabel">{{ exercise_status.exercise.name }}</h5>
-              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-              ...
-            </div>
-            <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-            </div>
+      <section class="description">
+          <div class="info-top-bar">
+              <div class="name-of-ex">
+                  <p class="quest-name">Quest The Best</p>
+                  <div class="status"></div>
+              </div>
+              <!-- <div class="quest-infos"> -->
+              <div class="dif">
+                  <p>Difficulty-</p>
+                  <p>EASY</p>
+              </div>
+              <!-- <p class="cattegory">Cattegory : Examples</p> -->
+              <!-- </div> -->
           </div>
-        </div>
-      </div>
 
-{% endblock %}
+          <div class="desc">
+              <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Expedita accusantium sit
+                  corrupti
+                  quia
+                  magni minus? Odit, doloremque voluptatem! Dolorem nesciunt minima, vero ullam eos
+                  doloribus
+                  eaque neque fugit vitae incidunt.</p>
+              <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Sequi dolore eaque itaque
+                  hic
+                  consequuntur dolor adipisci quidem rerum facere quam.</p>
+              <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Eius libero, magni harum
+                  repellat
+                  molestias <span class="inside-p-box">[1,2,3,4]</span> ipsa maiores magnam, a
+                  expedita,
+                  deserunt nihil rerum.
+                  Porro rem deleniti molestias.</p>
+
+          </div>
+      </section>
+
+      <!-- *****************
+              SECTION: SOLUTION
+           ******************* -->
+
+      <section class="solution">
+          <div class="info-top-bar">
+              <p class="title-sol"><span class="strong-undo">Your</span> solution</p>
+              <div class="desc-buttons">
+                  <button class="refresh"><i class="bi bi-arrow-clockwise"></i></button>
+                  <button class="run">Run</button>
+              </div>
+
+          </div>
+          <div class="full-code-field">
+            <div id="editor" class="code-line" >{{ exercise_status.code }}</div>
+          </div>
+          <!-- <div id="editor" class="full-code-field">{{ exercise_status.code }}</div> -->
+      </section>
+
+      <!-- *****************
+              SECTION: HINTS & TESTS
+                  CONTENT: HINTS
+           ******************* -->
+
+      <section class="tests">
+          <div class="info-top-bar">
+              <p class="test-hints-desc"><span class="strong-undo">Hints</span> & tests</p>
+              <button class="eye"><i class="bi bi-eye"></i></button>
+          </div>
+          <div class="test-and-hints blured">
+              <h2 class="hints-heading"><span class="strong-undo">Hints</span></h2>
+
+              <button class="btn" type="button" data-bs-toggle="collapse" data-bs-target="#hint1"
+                  aria-expanded="false" aria-controls="collapseExample">
+                  <p>Hint 1</p>
+                  <div class="arrow"><i class="bi bi-caret-down-fill"></i></div>
+              </button>
+              <div class="collapse" id="hint1">
+                  <div class="card card-body">
+                      Hints for user to solve really hard quest. Lorem ipsum, dolor sit amet consectetur
+                      adipisicing elit. Recusandae, eveniet impedit nisi quod assumenda alias.
+                  </div>
+              </div>
+
+              <button class="btn" type="button" data-bs-toggle="collapse" data-bs-target="#hint2"
+                  aria-expanded="false" aria-controls="collapseExample">
+                  <p>Hint 2</p>
+                  <div class="arrow"><i class="bi bi-caret-down-fill"></i></div>
+              </button>
+              <div class="collapse" id="hint2">
+                  <div class="card card-body">
+                      Hints for user to solve really hard quest. Lorem ipsum, dolor sit amet consectetur
+                      adipisicing elit. Recusandae, eveniet impedit nisi quod assumenda alias.
+                  </div>
+              </div>
+
+              <button class="btn" type="button" data-bs-toggle="collapse" data-bs-target="#hint3"
+                  aria-expanded="false" aria-controls="collapseExample">
+                  <p>Hint 3</p>
+                  <div class="arrow"><i class="bi bi-caret-down-fill"></i></div>
+              </button>
+              <div class="collapse" id="hint3">
+                  <div class="card card-body">
+                      Hints for user to solve really hard quest. Lorem ipsum, dolor sit amet consectetur
+                      adipisicing elit. Recusandae, eveniet impedit nisi quod assumenda alias.
+                  </div>
+              </div>
+
+
+              <!-- *****************
+              SECTION: HINTS & TESTS
+                  CONTENT: TESTS
+           ******************* -->
+
+              <!-- <h2 class="tests-heading"><span class="strong-undo">Tests</span></h2>
+              <button class="btn" type="button" data-bs-toggle="collapse" data-bs-target="#test1"
+                  aria-expanded="false" aria-controls="collapseExample">
+                  <p>Test 1</p>
+                  <div class="arrow"><i class="bi bi-caret-down-fill"></i></div>
+              </button>
+              <div class="collapse" id="test1">
+                  <div class="card card-body">
+                      Testcase that is used to check this quest. Lorem ipsum, dolor sit amet consectetur
+                      adipisicing elit. Recusandae, eveniet impedit nisi quod assumenda alias.
+                  </div>
+              </div> -->
+
+              <!-- <button class="btn" type="button" data-bs-toggle="collapse" data-bs-target="#test2"
+                  aria-expanded="false" aria-controls="collapseExample">
+                  <p>Test 2</p>
+                  <div class="arrow"><i class="bi bi-caret-down-fill"></i></div>
+              </button>
+              <div class="collapse" id="test2">
+                  <div class="card card-body">
+                      Testcase that is used to check this quest. Lorem ipsum, dolor sit amet consectetur
+                      adipisicing elit. Recusandae, eveniet impedit nisi quod assumenda alias.
+                  </div>
+              </div> -->
+
+              <!-- <button class="btn" type="button" data-bs-toggle="collapse" data-bs-target="#test3"
+                  aria-expanded="false" aria-controls="collapseExample">
+                  <p>Test 3</p>
+                  <div class="arrow"><i class="bi bi-caret-down-fill"></i></div>
+              </button>
+              <div class="collapse" id="test3">
+                  <div class="card card-body">
+                      Testcase that is used to check this quest. Lorem ipsum, dolor sit amet consectetur
+                      adipisicing elit. Recusandae, eveniet impedit nisi quod assumenda alias.
+                  </div>
+              </div> -->
+          </div>
+      </section>
+
+
+      <!-- *****************
+              SECTION: OUTPUT
+           ******************* -->
+
+      <section class="output">
+          <div class="info-top-bar">
+              <div class="final-result-status">
+                  <p class="output-desc"><span class="strong-undo">Final</span> result</p>
+                  <div class="final-status-check"><i class="bi bi-check-circle-fill"></i></div>
+                  <div class="final-status-failed"><i class="bi bi-x-circle-fill"></i></div>
+              </div>
+              <button class="submit" type="submit" disabled>Submit</button>
+          </div>
+
+          <div class="result-field">
+              <button class="btn" type="button" data-bs-toggle="collapse" data-bs-target="#output1"
+                  aria-expanded="false" aria-controls="collapseExample">
+                  <div class="test-stat">
+                      <p>Test 1</p>
+                      <div class="test1-check"><i class="bi bi-check-circle-fill"></i></div>
+                      <div class="test1-failed"><i class="bi bi-x-circle-fill"></i></div>
+                  </div>
+                  <div class="arrow"><i class="bi bi-caret-down-fill"></i></div>
+              </button>
+              <div class="collapse" id="output1">
+                  <div class="card card-body">
+                      You've passed / not passed this testcase
+                  </div>
+              </div>
+
+              <button class="btn" type="button" data-bs-toggle="collapse" data-bs-target="#output2"
+                  aria-expanded="false" aria-controls="collapseExample">
+                  <div class="test-stat">
+                      <p>Test 2</p>
+                      <div class="test2-check"><i class="bi bi-check-circle-fill"></i></div>
+                      <div class="test2-failed"><i class="bi bi-x-circle-fill"></i></div>
+                  </div>
+                  <div class="arrow"><i class="bi bi-caret-down-fill"></i></div>
+              </button>
+              <div class="collapse" id="output2">
+                  <div class="card card-body">
+                      You've passed / not passed this testcase
+                  </div>
+              </div>
+
+              <button class="btn" type="button" data-bs-toggle="collapse" data-bs-target="#output3"
+                  aria-expanded="false" aria-controls="collapseExample">
+                  <div class="test-stat">
+                      <p>Test 3</p>
+                      <div class="test3-check"><i class="bi bi-check-circle-fill"></i></div>
+                      <div class="test3-failed"><i class="bi bi-x-circle-fill"></i></div>
+                  </div>
+                  <div class="arrow"><i class="bi bi-caret-down-fill"></i></div>
+              </button>
+              <div class="collapse" id="output3">
+                  <div class="card card-body">
+                      You've passed / not passed this testcase
+                  </div>
+              </div>
+          </div>
+      </section>
+
+  </section>
+  <!-- </div> -->
+</div>
+
+{% endblock main_content %}
 
 
 {% block script %}
     <script src="{% static 'Exercises_checker/js/test_exercises.js' %}"></script>
+    <script src="{% static 'Exercises_checker/js/answer.js'%}" defer></script>
     <!-- <script src="//unpkg.com/@highlightjs/cdn-assets@11.5.1/highlight.min.js"></script>
     <script>hljs.highlightAll();</script> -->
     <script src="{% static 'Exercises_checker/js/ace.js' %}"></script>
@@ -56,7 +253,7 @@
   let exercise_status_id = "{{ exercise_status.id }}"
   ace.require("ace/ext/beautify");
   var editor = ace.edit("editor");
-  
+
   editor.setTheme("ace/theme/chrome");
   if(language == 'Python'){
     editor.session.setMode("ace/mode/python");

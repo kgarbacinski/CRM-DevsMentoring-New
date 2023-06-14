@@ -34,17 +34,6 @@ class MeetingSerializer(serializers.ModelSerializer):
         model = Meeting
         fields = "__all__"
 
-    def to_representation(self, instance):
-        representation = super().to_representation(instance)
-        representation["mentor"] = instance.mentor.id
-        representation["mentor_name"] = instance.mentor.__str__()
-        representation["student"] = instance.student.id
-        representation["student_name"] = instance.student.__str__()
-        representation["path"] = instance.path.id
-        representation["date"] = instance.date.strftime("%Y-%m-%d")
-        representation["hour"] = instance.date.strftime("%H:%M")
-        return representation
-
 
 class MeetingDetailSerializer(serializers.ModelSerializer):
     def to_representation(self, instance):
