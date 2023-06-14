@@ -1,78 +1,93 @@
-let menuItems = document.querySelectorAll(".li-item"),
-    sidebar = document.querySelector(".sidebar"),
-    handler = document.querySelector(".devs-handler"),
-    devmentorsCRM = document.querySelector(".mentors-top"),
-    menuFooter = document.querySelector(".menu-footer-content"),
-    hints = document.querySelectorAll(".hint"),
-    counters = document.querySelector(".list-counter"),
-    lines = document.querySelectorAll(".code-line"),
-    solution = document.querySelector(".solution"),
-    comment = document.querySelector(".only-comment"),
+const comment = document.querySelector(".only-comment"),
     outputTitle = document.querySelector(".output-title"),
-    output = document.querySelector(".output-result");
+    output = document.querySelector(".output-result"),
+    buttons = document.querySelectorAll(".btn"),
+    eye = document.querySelector(".eye"),
+    blur = document.querySelector(".test-and-hints"),
+    codeContent = document.querySelector(".code-content"),
+    refresh = document.querySelector(".refresh"),
+    submit = document.querySelector(".submit"),
+    stat = document.querySelector(".status"),
+    check = document.querySelector(".final-status-check"),
+    failed = document.querySelector(".final-status-failed");
 
-// const changeAttribute = (item, property) => item.setAttribute('style', property);
+const test1check = document.querySelector(".test1-check"),
+    test1failed = document.querySelector(".test1-failed"),
+    test2check = document.querySelector(".test2-check"),
+    test2failed = document.querySelector(".test2-failed"),
+    test3check = document.querySelector(".test3-check"),
+    test3failed = document.querySelector(".test3-failed");
+
+//          Czy student zaliczył poszczególne testy?
+
+let testObject = {
+    "test1": false,
+    "test2": true,
+    "test3": true
+}
+
+
+const testsResult = Object.values(testObject)
+
+//          Gdy wszystkie testy przeszły:
+let finalResult = testsResult.every(Boolean)
+
+
+const codeOnStart =
+`<div class="code-line">function testFunc (array, sequence) {</div>
+<div class="code-line only-comment"> <span class="c-comm">// Write your code
+        here.</span>
+</div>
+<div class="code-line">}</div>
+
+<div class="code-line readonly" readonly="true">exports. isValidSubsequence = isValidSubsequence;
+</div>`
+
+const changeAttribute = (item, property) => item.setAttribute('style', property);
 const checkIfShort = () => sidebar.clientWidth < 56;
 
-// const showLessMenu = () => menuItems.forEach(item => item.style.display = "none"),
-// showMoreMenu = () => menuItems.forEach(item => item.style.display = "inline");
+const changeStatus = (check, fail, bool) => {
+    if(bool) {
+        check.setAttribute("style", "display: inline")
+        fail.setAttribute("style", "display: none")
+    } else {
+        fail.setAttribute("style", "display: inline")
+        check.setAttribute("style", "display: none")
+    }
+}
 
-// const dontShowLogo = () => changeAttribute(devmentorsCRM, 'display: none'),
-//     showLogo = () => changeAttribute(devmentorsCRM, 'display: inline');
+// comment.addEventListener('click', () => comment.innerHTML = "")
 
-// const showLess = () => {
-//     changeAttribute(menuFooter, 'display: none')
-//     menuItems.forEach(item => item.style.display = "none")
-//     changeAttribute(devmentorsCRM, 'display: none')
-// }
+document.querySelector(".run").addEventListener('click', () => {
+    // const datas = document.querySelector(".code-content").innerText;
+    submit.disabled = false;
+    changeStatus(check, failed, finalResult)
+    sendToComputing();
 
-// const showMore = () => {
-//     changeAttribute(menuFooter, 'display: block')
-//     menuItems.forEach(item => item.style.display = "inline")
-//     changeAttribute(devmentorsCRM, 'display: inline')
-// }
 
-// handler.addEventListener('click', () => {
-//     if (!checkIfShort()) {
-//         sidebar.setAttribute('style', 'width: 55px')
-//         showLess()
-//     } else {
-//         sidebar.setAttribute('style', 'width: 390px')
-//         setTimeout(() => {
-//             showMore()
-//         }, 100)
-//     }
+    for([test, testBool] of Object.entries(testObject)) {
+        changeStatus(
+            document.querySelector(`.${test}-check`),
+            document.querySelector(`.${test}-failed`),
+            testBool)
+    }
+
+    })
+
 // })
 
-hints.forEach(hint => {
-    hint.addEventListener("click", () => {
+buttons.forEach( element => {
+    element.addEventListener('click', () => {
+        element.querySelector(".arrow").classList.toggle("arrow-toggled")
 
-        if (hint.querySelector(".hint-desc").style.display === "inline") {
-            hint.querySelector(".hint-desc").style.display = "none"
-        } else {
-            hint.querySelector(".hint-desc").style.display = "inline"
-        }
     })
 })
 
-// comment.addEventListener('click', () => {
-//     comment.innerHTML = ""
-// })
-
-// document.querySelector(".run").addEventListener('click', () => {
-//     outputTitle.innerHTML = '';
-//     output.innerHTML = document.querySelector(".code-content").innerText;
-// })
-
-
-// if (document.body.clientWidth >= 700) {
-//     showLess()
-// }
-
-window.addEventListener('resize', () => {
-    if (document.body.clientWidth >= 700) {
-        showLess()
-        sidebar.setAttribute('style', 'width: 55px')
-    }
+eye.addEventListener('click', () => {
+    eye.classList.toggle("eye-active");
+    blur.classList.toggle("blured")
 })
 
+// refresh.addEventListener('click', () => codeContent.innerHTML = codeOnStart)
+
+submit.addEventListener('click', () => stat.classList.toggle("status-active"))

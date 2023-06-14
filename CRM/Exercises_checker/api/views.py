@@ -60,6 +60,16 @@ class ExerciseView(generics.ListAPIView):
         return queryset, exercise_quantity, done_exercise_quantity
 
     def list(self, request, *args, **kwargs):
+        """
+        Returns a Response object containing the quantity of all exercises, done exercises, and each difficulty level's quantity and done quantity,
+        along with a dictionary of exercises for each difficulty level.
+        Parameters:
+            request (HttpRequest): The request object used to generate the response.
+            args (list): A list of additional positional arguments.
+            kwargs (dict): A dictionary of additional keyword arguments.
+        Returns:
+            Response: A Response object containing the quantity and exercises dictionaries.
+        """
         (
             all_exercises_quantity,
             done_exercises_quantity,
@@ -133,7 +143,6 @@ class ExerciseCodeView(APIView):
         if not exercise_status:
             raise Http404
         data = {"code": request.data.get("code"), "done": request.data.get("done")}
-        # done = {"done": request.data.get('done')}
         serializer = self.serializer_class(exercise_status, data=data, partial=True)
         if serializer.is_valid():
             serializer.save()

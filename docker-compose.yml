@@ -30,11 +30,12 @@ services:
         - SECRET_KEY=${SECRET_KEY}
     networks:
       - crmnetwork
-   
+
   computing:
     build: ./ExercisesComputing
     hostname: computing
-    command: python3 manage.py runserver computing:8002
+    # command: python3 manage.py runserver computing:8002
+    command: python3 manage.py runserver 0.0.0.0:8002
     restart: always
     volumes:
       - ./ExercisesComputing:/usr/src/app
@@ -73,10 +74,11 @@ services:
       - SECRET_KEY=${SECRET_KEY}
     depends_on:
       - computing
+      - redis
       - rabbit
     networks:
       - crmnetwork
-  
+
   prometheus:
     hostname: prometheus
     image: prom/prometheus
@@ -85,7 +87,7 @@ services:
     ports:
       - "9090:9090"
     depends_on:
-      - computing
+      - celery
     networks:
       - crmnetwork
 
@@ -97,6 +99,7 @@ services:
       - ./grafana/grafana.ini:/etc/grafana/grafana.ini
       - ./grafana/datasource.yml:/etc/grafana/datasources/datasource.yaml
     depends_on:
+      - celery
       - prometheus
     networks:
       - crmnetwork
@@ -104,4 +107,3 @@ services:
 networks:
   crmnetwork:
     name: CRM
-    
